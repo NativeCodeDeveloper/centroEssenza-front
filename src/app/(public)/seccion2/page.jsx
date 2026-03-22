@@ -1,91 +1,126 @@
 'use client'
 
-import Image from "next/image";
 import Link from "next/link";
 import RevealOnScroll from "@/Componentes/RevealOnScroll";
 import toast from "react-hot-toast";
-import {useEffect, useState} from "react";
-
+import { useEffect, useState } from "react";
 
 export default function Seccion2() {
+  const API = process.env.NEXT_PUBLIC_API_URL;
+  const [infoData, setInfoData] = useState([]);
 
-    const API = process.env.NEXT_PUBLIC_API_URL;
-    const [infoData, setInfoData] = useState([]);
-    const services = infoData.map((item) => {
-        return{
-            id: item.id_publicacionesTituloDescripcion,
-            name: item.publicacionesTitulo,
-            description: item.publicacionesDescripcion,
-            image:`https://imagedelivery.net/aCBUhLfqUcxA2yhIBn1fNQ/${item.publicacionesTituloDescripcionImagen}/card` ,
-        }
-    })
+  const fallbackServices = [
+    {
+      id: "srv-1",
+      name: "Atencion medica general y familiar",
+      description: "Evaluacion integral de salud, orientacion profesional y acompanamiento continuo.",
+      image: "/fondo2.png",
+    },
+    {
+      id: "srv-2",
+      name: "Atencion psicologica para ninos y adultos",
+      description: "Apoyo emocional para ansiedad, estres y procesos personales en todas las etapas.",
+      image: "/fondo3.png",
+    },
+    {
+      id: "srv-3",
+      name: "Nutricion y bienestar metabolico",
+      description: "Planes personalizados para mejorar habitos, energia y salud a largo plazo.",
+      image: "/fondo1.png",
+    },
+  ];
 
-async function loadServices() {
-        try {
-            const res = await  fetch(`${API}/publicacionesTituloDetalle/seleccionarPublicacionesTituloDetalle`, {
-                method: "GET",
-                headers: {Accept: "application/json"},
-                mode: "cors"
-            });
+  const services = infoData.map((item) => ({
+    id: item.id_publicacionesTituloDescripcion,
+    name: item.publicacionesTitulo,
+    description: item.publicacionesDescripcion,
+    image: `https://imagedelivery.net/aCBUhLfqUcxA2yhIBn1fNQ/${item.publicacionesTituloDescripcionImagen}/card`,
+  }));
 
-            if(!res.ok) {
-                return toast.error(`No ha sido posible cargar las imagenes del sistema contacte a soporte de NativeCode`)
-            }else {
+  async function loadServices() {
+    try {
+      const res = await fetch(`${API}/publicacionesTituloDetalle/seleccionarPublicacionesTituloDetalle`, {
+        method: "GET",
+        headers: { Accept: "application/json" },
+        mode: "cors",
+      });
 
-                const data = await res.json();
-                setInfoData(data);
-            }
-        }catch{
-            return toast.error(`No ha sido posible cargar las imagenes del sistema contacte a soporte de NativeCode`)
-        }
-}
+      if (!res.ok) {
+        return toast.error(`No ha sido posible cargar las imagenes del sistema contacte a soporte de NativeCode`);
+      }
 
-useEffect(() => {
+      const data = await res.json();
+      setInfoData(data);
+    } catch {
+      return toast.error(`No ha sido posible cargar las imagenes del sistema contacte a soporte de NativeCode`);
+    }
+  }
+
+  useEffect(() => {
     loadServices();
-})
+  }, []);
 
+  const content = services.length > 0 ? services : fallbackServices;
 
-
-    return (
-    <section id="servicios" className="scroll-mt-24 bg-[#080808] py-20 text-white sm:py-24">
+  return (
+    <section id="servicios" className="scroll-mt-24 bg-transparent py-22 text-white sm:py-28">
       <div className="mx-auto w-full max-w-7xl px-5 md:px-8 lg:px-10">
         <RevealOnScroll>
-          <p className="text-xs uppercase tracking-[0.24em] text-white/65">Servicios</p>
-          <h2 className="mt-4 max-w-3xl text-balance text-3xl font-light leading-tight tracking-[0.02em] sm:text-4xl lg:text-5xl">
-            Tratamientos diseñados para mejorar tu salud oral con precisión clínica.
-          </h2>
+          <div className="grid items-end gap-6 lg:grid-cols-[1fr_auto]">
+            <div>
+              <p className="text-xs uppercase tracking-[0.24em] text-[#f4dbcd]/68">Especialidades integrales</p>
+              <h2 className="mt-4 max-w-4xl text-balance text-4xl leading-[1] text-[#fff2e9] sm:text-5xl">
+                Medicina, psicologia, estetica y terapias en un mismo ecosistema de bienestar.
+              </h2>
+            </div>
+            <Link
+              href="/servicios"
+              className="inline-flex justify-center rounded-full bg-[#f7dcc7]/14 px-6 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#fde8dc] transition hover:bg-[#f7dcc7]/24"
+            >
+              Ver detalle completo
+            </Link>
+          </div>
         </RevealOnScroll>
 
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map((service, index) => (
-            <RevealOnScroll
-              key={service.name}
-              delayClass={index % 2 === 0 ? "delay-100" : "delay-150"}
-              className="h-full"
-            >
-              <Link
-                href="/reserva-hora"
-                aria-label={`Agendar para ${service.name}`}
-                className="group block h-full overflow-hidden rounded-3xl border border-white/10 bg-[#121212] transition duration-300 ease-out hover:-translate-y-1 hover:border-white/25"
-              >
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <img
+        <div className="mt-12 grid gap-4 lg:grid-cols-6">
+          {content.map((service, index) => {
+            const large = index === 0;
+            const medium = index === 1 || index === 2;
 
+            return (
+              <RevealOnScroll
+                key={service.id ?? service.name}
+                delayClass={index % 2 === 0 ? "delay-100" : "delay-150"}
+                className={[
+                  "h-full",
+                  large ? "lg:col-span-3 lg:row-span-2" : medium ? "lg:col-span-3" : "lg:col-span-2",
+                ].join(" ")}
+              >
+                <Link
+                  href="/reserva-hora"
+                  aria-label={`Agendar para ${service.name}`}
+                  className="group flex h-full flex-col overflow-hidden rounded-3xl bg-[linear-gradient(175deg,rgba(58,34,29,0.65)_0%,rgba(22,14,12,0.94)_100%)] transition duration-300 ease-out hover:-translate-y-1"
+                >
+                  <div className={large ? "relative min-h-[20rem] flex-1 overflow-hidden" : "relative aspect-[16/10] overflow-hidden"}>
+                    <img
                       src={service.image}
                       alt={service.name}
-                      className="w-full h-full object-cover transition duration-500 ease-out group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0.65)_100%)]" />
-                </div>
-                <div className="p-5">
-                  <h3 className="text-lg font-light tracking-[0.02em] text-white">{service.name}</h3>
-                  <p className="mt-2 text-sm leading-7 tracking-[0.02em] text-white/70">
-                    Evaluación personalizada y plan clínico premium para resultados funcionales y naturales.
-                  </p>
-                </div>
-              </Link>
-            </RevealOnScroll>
-          ))}
+                      className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,10,8,0.05)_0%,rgba(17,10,8,0.74)_100%)]" />
+                  </div>
+                  <div className={large ? "p-7" : "p-5"}>
+                    <h3 className={large ? "text-3xl font-medium tracking-[0.02em] text-[#fff1e8]" : "text-xl font-medium tracking-[0.02em] text-[#fff0e8]"}>
+                      {service.name}
+                    </h3>
+                    <p className={large ? "mt-3 text-base leading-8 tracking-[0.02em] text-[#f7dfd3]/84" : "mt-2 text-sm leading-7 tracking-[0.02em] text-[#f7dfd3]/78"}>
+                      {service.description || "Atencion personalizada con acompanamiento profesional y seguimiento continuo para resultados sostenibles."}
+                    </p>
+                  </div>
+                </Link>
+              </RevealOnScroll>
+            );
+          })}
         </div>
       </div>
     </section>

@@ -1,24 +1,18 @@
 import "./globals.css";
 import { AnimatedLayout } from "@/Componentes/AnimatedLayout";
 import AgendaProvider from "@/ContextosGlobales/AgendaContext";
-import { Inter, Lato, Michroma, Montserrat } from "next/font/google";
+import { Cormorant_Garamond, Manrope, Michroma } from "next/font/google";
 
-const montserrat = Montserrat({
+const manrope = Manrope({
   subsets: ["latin"],
-  variable: "--font-montserrat",
+  variable: "--font-manrope",
+  weight: ["400", "500", "600", "700", "800"],
+});
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  variable: "--font-cormorant",
   weight: ["400", "500", "600", "700"],
-});
-
-const lato = Lato({
-  subsets: ["latin"],
-  variable: "--font-lato",
-  weight: ["300", "400", "700"],
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  weight: ["300", "400", "500", "600"],
 });
 
 const michroma = Michroma({
@@ -28,27 +22,30 @@ const michroma = Michroma({
 });
 
 export const metadataBase = new URL(
-  process.env.NEXT_PUBLIC_SITE_URL || "https://www.ortegaschmuck.cl"
+  process.env.NEXT_PUBLIC_SITE_URL || "https://www.centrointegralessenza.cl"
 );
 
 export const metadata = {
   title: {
-    default: "Ortega & Schmuck | Clínica Dental Premium",
-    template: "%s | Ortega & Schmuck",
+    default: "Centro Integral ESSENZA | Salud, Bienestar y Estética",
+    template: "%s | Centro Integral ESSENZA",
   },
   description:
-    "Sitio oficial de Ortega & Schmuck. Odontología clínica integral con tecnología avanzada y planes personalizados.",
+    "Centro Integral ESSENZA en Pitrufquén. Salud integral con medicina, psicología, nutrición, fonoaudiología, estética y terapias complementarias.",
   keywords: [
-    "Ortega & Schmuck",
-    "clinica dental",
-    "odontologia integral",
-    "rehabilitacion oral",
-    "diseno de sonrisa",
-    "implantes dentales",
-    "clinica premium",
+    "Centro Integral ESSENZA",
+    "salud integral",
+    "bienestar",
+    "psicologia",
+    "medicina general",
+    "nutricion",
+    "fonoaudiologia",
+    "cosmetologia",
+    "masoterapia",
+    "Pitrufquen",
   ],
-  authors: [{ name: "Ortega & Schmuck", url: metadataBase.href }],
-  publisher: "Ortega & Schmuck",
+  authors: [{ name: "Centro Integral ESSENZA", url: metadataBase.href }],
+  publisher: "Centro Integral ESSENZA",
   robots: {
     index: true,
     follow: true,
@@ -59,26 +56,31 @@ export const metadata = {
   alternates: {
     canonical: metadataBase.href,
   },
+  icons: {
+    icon: "/logo1.png",
+    shortcut: "/logo1.png",
+    apple: "/logo1.png",
+  },
   openGraph: {
-    title: "Ortega & Schmuck | Clínica Dental Premium",
+    title: "Centro Integral ESSENZA | Salud, Bienestar y Estética",
     description:
-      "Experiencia clínica premium con enfoque integral en odontología y rehabilitación oral.",
+      "Un espacio diseñado para el bienestar completo, con atención profesional, cercana y personalizada.",
     url: metadataBase.href,
-    siteName: "Ortega & Schmuck",
+    siteName: "Centro Integral ESSENZA",
     locale: "es_CL",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ortega & Schmuck",
+    title: "Centro Integral ESSENZA",
     description:
-      "Odontología clínica premium con protocolos personalizados.",
+      "Psicología, medicina, estética y bienestar integral en Pitrufquén.",
   },
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="es" className={`${montserrat.variable} ${lato.variable} ${inter.variable} ${michroma.variable}`}>
+    <html lang="es" className={`${manrope.variable} ${cormorant.variable} ${michroma.variable}`}>
       <body className="min-h-screen bg-white">
         <AnimatedLayout>
           <AgendaProvider>{children}</AgendaProvider>

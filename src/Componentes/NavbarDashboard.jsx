@@ -69,7 +69,7 @@ export default function NavbarDashboard() {
                 }
               }}
             >
-                Ortega & Schmuck
+                Centro Integral ESSENZA
             </Typography>
           </Box>
 

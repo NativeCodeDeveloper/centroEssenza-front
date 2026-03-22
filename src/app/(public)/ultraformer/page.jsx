@@ -4,12 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 
 const beneficios = [
-  "Diagnóstico más preciso en menos tiempo",
-  "Planificación digital de tratamientos",
-  "Imágenes de alta definición",
-  "Mayor seguridad clínica",
-  "Mejor comunicación paciente-clínica",
-  "Seguimiento objetivo de avances",
+  "Evaluacion mas precisa en menos tiempo",
+  "Planificacion personalizada de tratamientos",
+  "Registro visual de avances",
+  "Mayor seguridad en cada procedimiento",
+  "Mejor comunicacion entre profesional y paciente",
+  "Seguimiento continuo y objetivo",
 ];
 
 export default function UltraformerPage() {
@@ -20,32 +20,29 @@ export default function UltraformerPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-300">
             Tecnología clínica
           </p>
-          <h1 className="mt-5 text-4xl leading-tight sm:text-5xl">Odontología digital</h1>
+          <h1 className="mt-5 text-4xl leading-tight sm:text-5xl">Evaluacion integral asistida por tecnologia</h1>
           <p className="mt-7 text-sm leading-relaxed text-slate-300 sm:text-base">
-            En Ortega & Schmuck incorporamos tecnología digital para elevar la precisión
-            diagnóstica y optimizar cada etapa del tratamiento odontológico.
+            En Centro Integral ESSENZA incorporamos herramientas digitales para mejorar la precision diagnostica y optimizar cada etapa de atencion.
           </p>
           <p className="mt-5 text-sm leading-relaxed text-slate-300 sm:text-base">
-            Utilizamos herramientas de imagen y planificación clínica que permiten decisiones
-            más seguras, tiempos más eficientes y una mejor experiencia para cada paciente.
+            Utilizamos apoyo de imagen y analisis profesional para decisiones mas seguras, tiempos mas eficientes y una mejor experiencia para cada persona.
           </p>
           <p className="mt-5 text-sm leading-relaxed text-slate-300 sm:text-base">
-            Cada evaluación se ajusta al caso clínico para definir objetivos realistas y un
-            plan de tratamiento totalmente personalizado.
+            Cada evaluacion se adapta al caso individual para definir objetivos realistas y una ruta de bienestar totalmente personalizada.
           </p>
 
           <Link
             href="/contacto"
             className="mt-10 inline-flex rounded-full bg-white px-7 py-3 text-sm font-medium text-slate-900 transition hover:bg-slate-200"
           >
-            Solicitar evaluación tecnológica
+            Solicitar evaluacion
           </Link>
         </div>
 
         <div className="relative aspect-[6/5] overflow-hidden rounded-[2rem] border border-white/20 bg-slate-900 shadow-[0_24px_70px_-38px_rgba(15,23,42,0.85)]">
           <Image
             src="/ultraformer.avif"
-            alt="Tecnología odontológica digital"
+            alt="Tecnologia para evaluacion integral"
             fill
             className="h-full w-full object-cover object-center"
           />

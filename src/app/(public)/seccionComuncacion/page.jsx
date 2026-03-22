@@ -3,7 +3,6 @@ import CarruselOfertas from "@/Componentes/CarruselOfertas";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-
 export default function SeccionComuncacion() {
     const API = process.env.NEXT_PUBLIC_API_URL;
     const [listaPublicaciones, setListaPublicaciones] = useState([]);
@@ -18,7 +17,7 @@ export default function SeccionComuncacion() {
             })
 
             if (!res.ok) {
-                console.error("No se han podido Listar Publicaciones / Falla en el fetch desde el frontEnd");
+                console.error("No se han podido listar publicaciones.");
                 setListaPublicaciones([])
                 return []
             } else {
@@ -27,135 +26,52 @@ export default function SeccionComuncacion() {
                 return publicaciones;
             }
         } catch (err) {
-            console.error("Problema al consultar Backen desde la vista fronend:" + err);
+            console.error("Problema al consultar backend desde la vista frontend:" + err);
+            setListaPublicaciones([]);
+            return [];
         }
     }
-
 
     useEffect(() => {
         listarPublicacionesCarrusel();
     }, []);
 
-
-
-
-
-    const logos = [
-        { src: "/logos/logo1.png", alt: "Logo 1" },
-        { src: "/logos/logo2.png", alt: "Logo 2", href: "https://tuweb.cl" },
-        { src: "/logos/logo3.png", alt: "Logo 3" },
-    ];
-
-
-    let Carrusel = listaPublicaciones.map((publicacion) =>
+    const carrusel = listaPublicaciones.map((publicacion) =>
         `https://imagedelivery.net/aCBUhLfqUcxA2yhIBn1fNQ/${publicacion.imagenPublicaciones_primera}/full`
     )
 
     return (
-        <div>
-            {/* PANTALLAS ESCRITORIO*/}
-            <div className="hidden md:block">
-                <section className="mt-50 px-6">
-                    <div className="max-w-7xl mx-auto text-center">
-                        <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">
-                            Revisa nuestras <span className="bg-gradient-to-r from-violet-500 to-sky-500 bg-clip-text text-transparent">novedades clínicas</span>
-                        </h1>
+        <main className="bg-transparent text-[#fff4ee]">
+            <section className="mx-auto w-full max-w-7xl px-6 pb-16 pt-24 md:px-10 md:pt-28">
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#f1d8cb]/72">
+                    Comunidad ESSENZA
+                </p>
+                <h1 className="mt-5 max-w-4xl text-4xl leading-tight text-[#fff1e9] sm:text-5xl">
+                    Novedades, contenidos y recomendaciones para tu bienestar integral.
+                </h1>
+                <p className="mt-6 max-w-3xl text-sm leading-relaxed text-[#f5dfd4]/82 sm:text-base">
+                    Compartimos orientacion profesional en salud, mente y estetica para acompanarte tambien fuera de la consulta.
+                </p>
+            </section>
 
-                        <p className="mt-4 text-gray-500 text-lg">
-                            Mejoramos tu salud oral con tecnología y protocolos personalizados
-                        </p>
+            <section className="mx-auto w-full max-w-7xl px-6 pb-20 md:px-10 md:pb-24">
+                <div className="rounded-[2rem] border border-[#f2d4c7]/14 bg-[linear-gradient(160deg,rgba(64,38,33,0.58)_0%,rgba(24,14,12,0.9)_100%)] p-4 sm:p-6">
+                    <CarruselOfertas
+                        title=""
+                        images={carrusel}
+                        intervalMs={1800}
+                    />
 
-
-
-                        <div className="w-full -mt-30 ">
-                            <CarruselOfertas
-                                title=""
-                                images={Carrusel}
-                                intervalMs={1800}
-                            />
-
-                            <Link href="/catalogo">
-                                <button className='
-                    -mt-30 border p-2 text-2xl w-100 rounded-3xl
-                    bg-gradient-to-r from-purple-500 via-indigo-500 to-cyan-400
-                    text-white font-bold tracking-wide
-                    shadow-lg
-                    transition-all duration-300 ease-out
-                    hover:scale-105
-                    hover:shadow-[0_0_35px_rgba(99,102,241,0.7)]
-                    hover:brightness-110
-                    active:scale-95
-                    '>Ver servicios</button>
-                            </Link>
-
-
-
-
-                        </div>
+                    <div className="-mt-8 flex justify-center pb-4 sm:pb-6">
+                        <Link
+                            href="/catalogo"
+                            className="rounded-full border border-[#f8dcc5]/45 bg-[linear-gradient(135deg,#f7dfcc_0%,#e7b27c_100%)] px-8 py-3 text-sm font-semibold uppercase tracking-[0.16em] text-[#2f1a12] transition hover:brightness-105"
+                        >
+                            Ver servicios
+                        </Link>
                     </div>
-                </section>
-            </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            {/* PANTALLAS CELULARES      */}
-            <div className="block md:hidden">
-                <section className="mt-50 px-6">
-                    <div className="max-w-7xl mx-auto text-center">
-                        <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">
-                            Revisa nuestras <span className="bg-gradient-to-r from-violet-500 to-sky-500 bg-clip-text text-transparent">novedades clínicas</span>
-                        </h1>
-
-                        <p className="mt-4 text-gray-500 text-lg">
-                            Mejoramos tu salud oral con tecnología y protocolos personalizados
-                        </p>
-
-                        <br />
-
-
-
-                        <div className="w-full -mt-30 ">
-                            <CarruselOfertas
-                                title=""
-                                images={Carrusel}
-                                intervalMs={1800}
-                            />
-
-                            <Link href="/catalogo">
-                                <button className='
-                    -mt-50 border p-2 text-2xl w-70 rounded-3xl
-                    bg-gradient-to-r from-purple-500 via-indigo-500 to-cyan-400
-                    text-white font-bold tracking-wide
-                    shadow-lg
-                    transition-all duration-300 ease-out
-                    hover:scale-105
-                    hover:shadow-[0_0_35px_rgba(99,102,241,0.7)]
-                    hover:brightness-110
-                    active:scale-95
-                    '>Ver servicios</button>
-                            </Link>
-
-
-
-
-                        </div>
-                    </div>
-                </section>
-            </div>
-
-        </div>
+                </div>
+            </section>
+        </main>
     );
 }

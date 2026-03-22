@@ -1,54 +1,93 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 
 const navItems = [
-  { label: "Inicio", href: "/#inicio" },
-  { label: "Servicios", href: "/#servicios" },
-  { label: "Casos clinicos", href: "/#casos-clinicos" },
+  { label: "Enfoque integral", href: "/#porque-elegirnos" },
+  { label: "Especialidades", href: "/#servicios" },
+  { label: "Resultados", href: "/#casos-clinicos" },
+  { label: "Servicios", href: "/servicios" },
   { label: "Contacto", href: "/contacto" },
 ];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    let rafId = null;
+
+    const updateProgress = () => {
+      const y = window.scrollY || 0;
+      const next = Math.min(y / 240, 1);
+
+      setScrollProgress((current) => {
+        if (Math.abs(current - next) < 0.01) return current;
+        return next;
+      });
+      rafId = null;
+    };
+
+    const onScroll = () => {
+      if (rafId !== null) return;
+      rafId = window.requestAnimationFrame(updateProgress);
+    };
+
+    updateProgress();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId);
+      }
+    };
+  }, []);
+
+  const topAlpha = 0.02 + scrollProgress * 0.88;
+  const middleAlpha = 0.01 + scrollProgress * 0.78;
+  const bottomAlpha = 0 + scrollProgress * 0.58;
+  const borderAlpha = scrollProgress * 0.2;
+  const shadowAlpha = scrollProgress * 0.42;
+  const blurPx = scrollProgress * 22;
+  const borderWidth = scrollProgress > 0.02 ? 1 : 0;
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 bg-[linear-gradient(180deg,rgba(116,120,127,0.42)_0%,rgba(41,43,47,0.58)_45%,rgba(4,4,5,0.76)_100%)] backdrop-blur-2xl">
+    <header
+      className="fixed inset-x-0 top-0 z-50 transition-[background,box-shadow,border-color,border-width,backdrop-filter] duration-300"
+      style={{
+        background: `linear-gradient(180deg, rgba(32,20,17,${topAlpha}) 0%, rgba(24,15,12,${middleAlpha}) 48%, rgba(16,10,8,${bottomAlpha}) 100%)`,
+        borderBottomColor: `rgba(244, 216, 203, ${borderAlpha})`,
+        borderBottomStyle: "solid",
+        borderBottomWidth: `${borderWidth}px`,
+        boxShadow: `0 16px 36px -26px rgba(0,0,0,${shadowAlpha})`,
+        backdropFilter: `blur(${blurPx}px) saturate(130%)`,
+      }}
+    >
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:h-20 md:h-24 md:px-8 lg:px-6">
-
-        {/* Logo */}
-        <Link href="/#inicio" aria-label="Ir al inicio" className="group flex shrink-0 items-center gap-2 sm:gap-3">
-          <div className="relative h-10 w-10 sm:h-14 sm:w-14 md:h-20 md:w-20">
+        <Link href="/#inicio" aria-label="Ir al inicio" className="group flex shrink-0 items-center gap-3 sm:gap-4">
+          <div className="relative shrink-0">
             <Image
-              src="/logodifort.png"
-              alt="Ortega & Schmuck"
-              fill
+              src="/logofull.png"
+              alt="Logo Centro Integral ESSENZA"
+              width={84}
+              height={84}
               priority
-              sizes="(max-width: 640px) 40px, (max-width: 768px) 56px, 80px"
-              className="object-cover object-center transition-transform duration-300 group-hover:scale-105"
+              className="h-[60px] w-[60px] object-contain sm:h-[72px] sm:w-[72px]"
             />
-          </div>
-          <div className="min-w-0">
-            <p className="truncate text-xs font-medium uppercase tracking-[0.2em] text-white sm:text-sm sm:tracking-[0.28em]">
-              Ortega & Schmuck
-            </p>
-            <p className="hidden truncate text-[8px] uppercase tracking-[0.2em] text-white/65 sm:block sm:text-[9px]">
-              Odontología y Medicina Estética.
-            </p>
           </div>
         </Link>
 
-        {/* Nav desktop */}
         <nav aria-label="Menu principal" className="hidden lg:block">
-          <ul className="flex items-center gap-8 xl:gap-12">
+          <ul className="flex items-center gap-6 xl:gap-9">
             {navItems.map((item) => (
               <li key={item.label}>
                 <Link
                   href={item.href}
-                  className="text-[11px] font-medium uppercase tracking-[0.2em] text-white/80 transition-colors duration-300 hover:text-white"
+                  className="text-[14px] font-medium uppercase tracking-[0.22em] text-[#f7ded4]/78 transition-colors duration-300 hover:text-[#ffe7d8]"
                 >
                   {item.label}
                 </Link>
@@ -57,12 +96,11 @@ export default function Navbar() {
           </ul>
         </nav>
 
-        {/* Acciones */}
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <Link
             href="/agendaProfesionales"
             aria-label="Agendar hora"
-            className="hidden rounded-full border border-white/25 bg-white px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-black transition duration-300 ease-out hover:bg-white/90 sm:inline-flex sm:px-5 sm:py-2.5 sm:text-xs"
+            className="hidden rounded-full border border-[#f5d7be]/45 bg-[linear-gradient(135deg,#f6deca_0%,#e7b987_100%)] px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#311a12] transition duration-300 ease-out hover:brightness-105 sm:inline-flex sm:px-5 sm:py-2.5 sm:text-xs"
           >
             Agendar hora
           </Link>
@@ -72,17 +110,16 @@ export default function Navbar() {
             aria-label={isOpen ? "Cerrar menu" : "Abrir menu"}
             aria-expanded={isOpen}
             onClick={() => setIsOpen((prev) => !prev)}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white transition hover:bg-white/20 sm:h-10 sm:w-10 lg:hidden"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#f7ddd2]/35 bg-[#2b1a15]/75 text-[#f9e5db] transition hover:bg-[#3b241d] sm:h-10 sm:w-10 lg:hidden"
           >
             {isOpen ? <X className="h-4 w-4 sm:h-5 sm:w-5" /> : <Menu className="h-4 w-4 sm:h-5 sm:w-5" />}
           </button>
         </div>
       </div>
 
-      {/* Menu móvil */}
       <div
         className={[
-          "overflow-hidden border-t border-white/10 bg-black/90 backdrop-blur-xl lg:hidden",
+          "overflow-hidden border-t border-[#f4d7c8]/15 bg-[#170f0c]/92 backdrop-blur-xl lg:hidden",
           isOpen ? "max-h-[420px] opacity-100" : "max-h-0 opacity-0",
           "transition-all duration-300 ease-out",
         ].join(" ")}
@@ -93,7 +130,7 @@ export default function Navbar() {
               key={item.label}
               href={item.href}
               onClick={() => setIsOpen(false)}
-              className="rounded-lg border border-transparent px-4 py-3 text-[11px] font-medium uppercase tracking-[0.16em] text-white/85 transition duration-300 hover:border-white/15 hover:bg-white/10 sm:text-xs"
+              className="rounded-lg border border-transparent px-4 py-3 text-[11px] font-medium uppercase tracking-[0.16em] text-[#ffe6d8]/88 transition duration-300 hover:border-[#f6d9c8]/20 hover:bg-[#f6d9c8]/8 sm:text-xs"
             >
               {item.label}
             </Link>
@@ -102,7 +139,7 @@ export default function Navbar() {
             href="/agendaProfesionales"
             onClick={() => setIsOpen(false)}
             aria-label="Agendar hora desde menu movil"
-            className="mt-2 rounded-lg border border-white/25 bg-white px-4 py-3 text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-black transition duration-300 hover:bg-white/90 sm:text-xs"
+            className="mt-2 rounded-lg border border-[#f7dcc3]/45 bg-[linear-gradient(135deg,#f7dfcc_0%,#e7b07b_100%)] px-4 py-3 text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-[#2f1a12] transition duration-300 hover:brightness-105 sm:text-xs"
           >
             Agendar hora
           </Link>

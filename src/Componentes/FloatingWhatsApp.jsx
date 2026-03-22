@@ -4,11 +4,11 @@ import { FloatingWhatsApp } from "react-floating-whatsapp";
 export default function WhatsAppButton() {
     return (
         <FloatingWhatsApp
-            phoneNumber="+56977173029" // tu número con código de país
-            accountName="Ortega & Schmuck"
+            phoneNumber="+56987728500"
+            accountName="Centro Integral ESSENZA"
             avatar="/logodifort.png" // opcional: logo o imagen en public/
             statusMessage=""
-            chatMessage="¡Hola! 👋 ¿Como podemos ayudarte?"
+            chatMessage="Hola, gracias por contactar a Centro Integral ESSENZA. ¿En que podemos ayudarte?"
             placeholder="Escribe tu mensaje..."
             notification
             notificationSound

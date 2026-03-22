@@ -9,26 +9,26 @@ import { Textarea } from "@/components/ui/textarea";
 const contactCards = [
   {
     title: "Ubicación",
-    value: "Providencia, Santiago de Chile",
+    value: "12 de Febrero 926, Pitrufquen, Novena region",
     href: null,
     icon: MapPin,
   },
   {
     title: "WhatsApp",
-    value: "+56 9 9483 6980",
-    href: "https://wa.me/56994836980",
+    value: "+56 9 8772 8500",
+    href: "https://wa.me/56987728500",
     icon: MessageCircle,
   },
   {
     title: "Email",
-    value: "contacto@ortegaschmuck.cl",
-    href: "mailto:contacto@ortegaschmuck.cl",
+    value: "Centrointegral.essenza@gmail.com",
+    href: "mailto:Centrointegral.essenza@gmail.com",
     icon: Mail,
   },
   {
     title: "Instagram",
-    value: "@ortegaschmuck.cl",
-    href: "https://www.instagram.com/ortegaschmuck.cl",
+    value: "@essenza.centrointegral",
+    href: "https://www.instagram.com/essenza.centrointegral?igsh=czR0NXFnMHl1bzR5",
     icon: Instagram,
   },
 ];
@@ -77,25 +77,23 @@ export default function ContactoPage() {
   }
 
   return (
-    <main className="bg-[#f6f7fb] text-slate-900">
+    <main className="bg-transparent text-[#fff4ee]">
       <section className="relative overflow-hidden py-24 md:py-28">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_10%,rgba(148,163,184,0.22),transparent_35%),radial-gradient(circle_at_88%_2%,rgba(59,130,246,0.12),transparent_42%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_10%,rgba(247,205,212,0.2),transparent_34%),radial-gradient(circle_at_88%_2%,rgba(226,182,120,0.16),transparent_42%)]" />
 
         <div className="relative mx-auto grid w-full max-w-7xl gap-10 px-6 md:px-10 lg:grid-cols-[1fr_1.05fr] xl:px-12 xl:gap-14">
-          <aside className="rounded-[2rem] border border-white/80 bg-white/70 p-7 shadow-[0_24px_70px_-45px_rgba(15,23,42,0.45)] backdrop-blur md:p-9">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+          <aside className="rounded-[2rem] border border-[#f4d7c8]/16 bg-[linear-gradient(160deg,rgba(67,40,34,0.55)_0%,rgba(28,17,14,0.85)_100%)] p-7 shadow-[0_24px_70px_-45px_rgba(0,0,0,0.55)] backdrop-blur md:p-9">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#f0d7cb]/72">
               Contacto
             </p>
-            <h1 className="mt-4 text-4xl leading-[1.02] text-slate-900 sm:text-5xl">
-              Agenda tu evaluación con atención personalizada.
+            <h1 className="mt-4 text-4xl leading-[1.02] text-[#fff1e9] sm:text-5xl">
+              Agenda tu atencion en Centro Integral ESSENZA.
             </h1>
-            <p className="mt-6 max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base">
-              Escríbenos y te ayudaremos a resolver tus dudas sobre procedimientos,
-              evaluación inicial y tiempos estimados.
+            <p className="mt-6 max-w-xl text-sm leading-relaxed text-[#f7e0d5]/82 sm:text-base">
+              Te orientamos sobre medicina, psicologia, nutricion, fonoaudiologia, cosmetologia y terapias complementarias.
             </p>
-            <p className="mt-3 max-w-xl text-xs leading-relaxed text-slate-500 sm:text-sm">
-              Para resguardar privacidad, la dirección exacta se entrega solo al confirmar
-              la evaluación.
+            <p className="mt-3 max-w-xl text-xs leading-relaxed text-[#f0d5ca]/68 sm:text-sm">
+              Nuestro equipo te acompana en cada etapa con atencion cercana y seguimiento profesional.
             </p>
 
             <div className="mt-9 grid gap-4 sm:grid-cols-2">
@@ -103,13 +101,18 @@ export default function ContactoPage() {
                 const Icon = item.icon;
                 const content = (
                   <>
-                    <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white">
+                    <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-[#f8dcc8]/18 text-[#fde9dd]">
                       <Icon className="h-5 w-5" />
                     </div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#f3d9cc]/68">
                       {item.title}
                     </p>
-                    <p className="mt-2 text-sm font-medium leading-relaxed text-slate-800">
+                    <p
+                      className={[
+                        "mt-2 min-w-0 text-sm font-medium leading-relaxed text-[#ffefe5]",
+                        item.title === "Email" ? "break-all" : "break-words",
+                      ].join(" ")}
+                    >
                       {item.value}
                     </p>
                   </>
@@ -122,7 +125,7 @@ export default function ContactoPage() {
                       href={item.href}
                       target={item.href.startsWith("http") ? "_blank" : undefined}
                       rel={item.href.startsWith("http") ? "noreferrer" : undefined}
-                      className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-slate-300"
+                      className="rounded-2xl border border-[#f3d7ca]/16 bg-[#f9ddca]/8 p-5 transition hover:-translate-y-0.5 hover:border-[#f5dece]/28"
                     >
                       {content}
                     </a>
@@ -132,7 +135,7 @@ export default function ContactoPage() {
                 return (
                   <article
                     key={item.title}
-                    className="rounded-2xl border border-slate-200 bg-white p-5"
+                    className="rounded-2xl border border-[#f3d7ca]/16 bg-[#f9ddca]/8 p-5"
                   >
                     {content}
                   </article>
@@ -140,12 +143,12 @@ export default function ContactoPage() {
               })}
             </div>
 
-            <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-5">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+            <div className="mt-8 rounded-2xl border border-[#f3d7ca]/16 bg-[#f9ddca]/8 p-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#f1d8cb]/70">
                 Horario de atención
               </p>
-              <div className="mt-3 flex items-start gap-3 text-sm text-slate-700">
-                <Clock3 className="mt-0.5 h-4 w-4 text-slate-500" />
+              <div className="mt-3 flex items-start gap-3 text-sm text-[#f7e0d5]/82">
+                <Clock3 className="mt-0.5 h-4 w-4 text-[#f0d7ca]/74" />
                 <div className="space-y-1.5">
                   <p>Lunes a Viernes: 9:00 a 19:00</p>
                   <p>Sábado: 10:00 a 14:00</p>
@@ -155,16 +158,15 @@ export default function ContactoPage() {
             </div>
           </aside>
 
-          <div className="rounded-[2rem] border border-white/80 bg-white p-7 shadow-[0_24px_70px_-45px_rgba(15,23,42,0.45)] md:p-9">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+          <div className="rounded-[2rem] border border-[#f4d7c8]/16 bg-[linear-gradient(160deg,rgba(64,38,33,0.6)_0%,rgba(25,15,13,0.9)_100%)] p-7 shadow-[0_24px_70px_-45px_rgba(0,0,0,0.55)] md:p-9">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#f0d7cb]/72">
               Formulario de contacto
             </p>
-            <h2 className="mt-4 text-3xl leading-tight text-slate-900 sm:text-4xl">
-              Cuéntanos tu caso y te responderemos a la brevedad.
+            <h2 className="mt-4 text-3xl leading-tight text-[#fff1e9] sm:text-4xl">
+              Cuentanos tu caso y te responderemos a la brevedad.
             </h2>
-            <p className="mt-4 text-sm leading-relaxed text-slate-600">
-              Si prefieres, indícanos en tu mensaje si quieres respuesta por WhatsApp o
-              llamada telefónica.
+            <p className="mt-4 text-sm leading-relaxed text-[#f6dfd3]/82">
+              Indicanos si prefieres respuesta por WhatsApp, correo o llamada telefonica.
             </p>
 
             <form
@@ -175,20 +177,20 @@ export default function ContactoPage() {
               }}
             >
               <div className="space-y-2">
-                <label htmlFor="nombre" className="text-sm font-medium text-slate-700">
+                <label htmlFor="nombre" className="text-sm font-medium text-[#f7e0d5]/86">
                   Nombre
                 </label>
                 <Input
                   id="nombre"
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
-                  placeholder="Ej: Camila Pérez"
-                  className="h-11 rounded-xl border-slate-300 bg-white"
+                  placeholder="Ej: Camila Perez"
+                  className="h-11 rounded-xl border-[#f0d2c3]/30 bg-[#f7dcc8]/10 text-[#fff1e8] placeholder:text-[#f2d6c8]/55"
                 />
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium text-slate-700">
+                <label htmlFor="email" className="text-sm font-medium text-[#f7e0d5]/86">
                   Email
                 </label>
                 <Input
@@ -197,12 +199,12 @@ export default function ContactoPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Ej: correo@ejemplo.com"
-                  className="h-11 rounded-xl border-slate-300 bg-white"
+                  className="h-11 rounded-xl border-[#f0d2c3]/30 bg-[#f7dcc8]/10 text-[#fff1e8] placeholder:text-[#f2d6c8]/55"
                 />
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="mensaje" className="text-sm font-medium text-slate-700">
+                <label htmlFor="mensaje" className="text-sm font-medium text-[#f7e0d5]/86">
                   Mensaje
                 </label>
                 <Textarea
@@ -210,13 +212,13 @@ export default function ContactoPage() {
                   value={mensaje}
                   onChange={(e) => setMensaje(e.target.value)}
                   placeholder="Escribe tu consulta..."
-                  className="min-h-[150px] rounded-xl border-slate-300 bg-white"
+                  className="min-h-[150px] rounded-xl border-[#f0d2c3]/30 bg-[#f7dcc8]/10 text-[#fff1e8] placeholder:text-[#f2d6c8]/55"
                 />
               </div>
 
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-7 py-3 text-sm font-medium text-white transition hover:bg-slate-700"
+                className="inline-flex items-center gap-2 rounded-full border border-[#f8dcc5]/45 bg-[linear-gradient(135deg,#f7dfcc_0%,#e7b27c_100%)] px-7 py-3 text-sm font-semibold text-[#2f1a12] transition hover:brightness-105"
               >
                 Enviar mensaje
                 <Send className="h-4 w-4" />

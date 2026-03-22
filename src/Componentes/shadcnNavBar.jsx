@@ -26,10 +26,10 @@ export function ShadcnNavBar() {
           </div>
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold uppercase tracking-[0.22em] text-white/95">
-              Ortega & Schmuck
+              Centro Integral ESSENZA
             </p>
             <p className="truncate text-[11px] uppercase tracking-[0.18em] text-white/65">
-              Odontología clínica integral
+              Salud y bienestar integral
             </p>
           </div>
         </Link>
