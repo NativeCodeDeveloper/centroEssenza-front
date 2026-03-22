@@ -47,11 +47,11 @@ export default function Navbar() {
     };
   }, []);
 
-  const topAlpha = 0.02 + scrollProgress * 0.88;
-  const middleAlpha = 0.01 + scrollProgress * 0.78;
-  const bottomAlpha = 0 + scrollProgress * 0.58;
-  const borderAlpha = scrollProgress * 0.2;
-  const shadowAlpha = scrollProgress * 0.42;
+  const topAlpha = 0.02 + scrollProgress * 0.82;
+  const middleAlpha = 0.01 + scrollProgress * 0.74;
+  const bottomAlpha = scrollProgress * 0.62;
+  const borderAlpha = scrollProgress * 0.24;
+  const shadowAlpha = scrollProgress * 0.2;
   const blurPx = scrollProgress * 22;
   const borderWidth = scrollProgress > 0.02 ? 1 : 0;
 
@@ -59,8 +59,8 @@ export default function Navbar() {
     <header
       className="fixed inset-x-0 top-0 z-50 transition-[background,box-shadow,border-color,border-width,backdrop-filter] duration-300"
       style={{
-        background: `linear-gradient(180deg, rgba(32,20,17,${topAlpha}) 0%, rgba(24,15,12,${middleAlpha}) 48%, rgba(16,10,8,${bottomAlpha}) 100%)`,
-        borderBottomColor: `rgba(244, 216, 203, ${borderAlpha})`,
+        background: `linear-gradient(180deg, rgba(244,236,224,${topAlpha}) 0%, rgba(236,226,210,${middleAlpha}) 48%, rgba(230,217,197,${bottomAlpha}) 100%)`,
+        borderBottomColor: `rgba(172, 135, 92, ${borderAlpha})`,
         borderBottomStyle: "solid",
         borderBottomWidth: `${borderWidth}px`,
         boxShadow: `0 16px 36px -26px rgba(0,0,0,${shadowAlpha})`,
@@ -87,7 +87,7 @@ export default function Navbar() {
               <li key={item.label}>
                 <Link
                   href={item.href}
-                  className="text-[14px] font-medium uppercase tracking-[0.22em] text-[#f7ded4]/78 transition-colors duration-300 hover:text-[#ffe7d8]"
+                  className="text-[14px] font-medium uppercase tracking-[0.22em] text-[#6c5133]/88 transition-colors duration-300 hover:text-[#4a2f13]"
                 >
                   {item.label}
                 </Link>
@@ -110,7 +110,7 @@ export default function Navbar() {
             aria-label={isOpen ? "Cerrar menu" : "Abrir menu"}
             aria-expanded={isOpen}
             onClick={() => setIsOpen((prev) => !prev)}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#f7ddd2]/35 bg-[#2b1a15]/75 text-[#f9e5db] transition hover:bg-[#3b241d] sm:h-10 sm:w-10 lg:hidden"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#d7bea0]/45 bg-[#f7ebda]/74 text-[#6d5232] transition hover:bg-[#f2e0c9] sm:h-10 sm:w-10 lg:hidden"
           >
             {isOpen ? <X className="h-4 w-4 sm:h-5 sm:w-5" /> : <Menu className="h-4 w-4 sm:h-5 sm:w-5" />}
           </button>
@@ -119,7 +119,7 @@ export default function Navbar() {
 
       <div
         className={[
-          "overflow-hidden border-t border-[#f4d7c8]/15 bg-[#170f0c]/92 backdrop-blur-xl lg:hidden",
+          "overflow-hidden border-t border-[#dcc6a9]/35 bg-[#f2e5d4]/92 backdrop-blur-xl lg:hidden",
           isOpen ? "max-h-[420px] opacity-100" : "max-h-0 opacity-0",
           "transition-all duration-300 ease-out",
         ].join(" ")}
@@ -130,7 +130,7 @@ export default function Navbar() {
               key={item.label}
               href={item.href}
               onClick={() => setIsOpen(false)}
-              className="rounded-lg border border-transparent px-4 py-3 text-[11px] font-medium uppercase tracking-[0.16em] text-[#ffe6d8]/88 transition duration-300 hover:border-[#f6d9c8]/20 hover:bg-[#f6d9c8]/8 sm:text-xs"
+              className="rounded-lg border border-transparent px-4 py-3 text-[11px] font-medium uppercase tracking-[0.16em] text-[#6c5133]/92 transition duration-300 hover:border-[#d8c0a4]/45 hover:bg-[#ead6bc]/38 sm:text-xs"
             >
               {item.label}
             </Link>

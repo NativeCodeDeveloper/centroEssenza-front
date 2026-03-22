@@ -62,13 +62,13 @@ export default function Seccion3() {
 
   return (
     <>
-      <section id="casos-clinicos" className="scroll-mt-24 bg-transparent py-22 text-white sm:py-28">
+      <section id="casos-clinicos" className="scroll-mt-24 bg-transparent py-22 text-[#5d462d] sm:py-28">
         <div className="mx-auto w-full max-w-7xl px-5 md:px-8 lg:px-10">
           <RevealOnScroll>
             <div className="grid gap-6 lg:grid-cols-[1fr_22rem] lg:items-end">
               <div>
-                <p className="text-xs uppercase tracking-[0.24em] text-[#f4dbcd]/68">Experiencias y resultados</p>
-                <h2 className="mt-4 max-w-4xl text-balance text-4xl leading-[1] text-[#fff2e9] sm:text-5xl">
+                <p className="text-xs uppercase tracking-[0.24em] text-[#9a7750]/72">Experiencias y resultados</p>
+                <h2 className="mt-4 max-w-4xl text-balance text-4xl leading-[1] text-[#5b4229] sm:text-5xl">
                   Historias reales de personas que eligieron un enfoque integral.
                 </h2>
               </div>
@@ -135,7 +135,7 @@ export default function Seccion3() {
         </div>
       </section>
 
-      <section id="agenda" className="scroll-mt-24 bg-transparent py-20 text-white sm:py-24">
+      <section id="agenda" className="scroll-mt-24 bg-transparent py-20 text-[#5d462d] sm:py-24">
         <div className="mx-auto w-full max-w-7xl px-5 md:px-8 lg:px-10">
           <RevealOnScroll>
             <div className="rounded-[2rem] bg-[linear-gradient(145deg,rgba(72,42,35,0.62)_0%,rgba(26,16,13,0.9)_55%,rgba(15,10,8,1)_100%)] px-6 py-14 text-center sm:px-10">

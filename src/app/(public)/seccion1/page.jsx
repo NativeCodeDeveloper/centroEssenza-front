@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { Brain, HeartPulse, Stethoscope } from "lucide-react";
 import RevealOnScroll from "@/Componentes/RevealOnScroll";
 
 const pillars = [
@@ -27,7 +26,7 @@ const pillars = [
 
 export default function Seccion1() {
   return (
-    <section id="porque-elegirnos" className="scroll-mt-24 bg-transparent py-22 text-white sm:py-28">
+    <section id="porque-elegirnos" className="scroll-mt-24 bg-transparent py-22 text-[#5d462d] sm:py-28">
       <div className="mx-auto grid w-full max-w-7xl gap-8 px-5 md:px-8 lg:grid-cols-12 lg:gap-10 lg:px-10">
         <RevealOnScroll className="lg:col-span-4">
           <div className="sticky top-28 rounded-[2rem] bg-[linear-gradient(165deg,rgba(74,46,39,0.48)_0%,rgba(26,16,13,0.9)_100%)] p-7 shadow-[0_30px_80px_-56px_rgba(228,175,110,0.55)]">
@@ -44,7 +43,6 @@ export default function Seccion1() {
 
         <div className="grid gap-4 sm:grid-cols-2 lg:col-span-8">
           {pillars.map((item, index) => {
-            const Icon = item.icon;
             const shifted = index % 2 === 0 ? "sm:-translate-y-3" : "sm:translate-y-3";
 
             return (
@@ -64,9 +62,7 @@ export default function Seccion1() {
                         height={24}
                         className="h-6 w-6 rounded-full object-cover"
                       />
-                    ) : (
-                      <Icon className="h-8 w-8 text-[#fde8de]" />
-                    )}
+                    ) : null}
                   </div>
                   <h3 className="mt-5 text-2xl font-medium tracking-[0.01em] text-[#fff0e8]">{item.title}</h3>
                   <p className="mt-3 text-sm leading-7 tracking-[0.02em] text-[#f6dfd4]/80">{item.text}</p>

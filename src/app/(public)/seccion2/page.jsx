@@ -63,19 +63,19 @@ export default function Seccion2() {
   const content = services.length > 0 ? services : fallbackServices;
 
   return (
-    <section id="servicios" className="scroll-mt-24 bg-transparent py-22 text-white sm:py-28">
+    <section id="servicios" className="scroll-mt-24 bg-transparent py-22 text-[#5d462d] sm:py-28">
       <div className="mx-auto w-full max-w-7xl px-5 md:px-8 lg:px-10">
         <RevealOnScroll>
           <div className="grid items-end gap-6 lg:grid-cols-[1fr_auto]">
             <div>
-              <p className="text-xs uppercase tracking-[0.24em] text-[#f4dbcd]/68">Especialidades integrales</p>
-              <h2 className="mt-4 max-w-4xl text-balance text-4xl leading-[1] text-[#fff2e9] sm:text-5xl">
+              <p className="text-xs uppercase tracking-[0.24em] text-[#9a7750]/72">Especialidades integrales</p>
+              <h2 className="mt-4 max-w-4xl text-balance text-4xl leading-[1] text-[#5b4229] sm:text-5xl">
                 Medicina, psicologia, estetica y terapias en un mismo ecosistema de bienestar.
               </h2>
             </div>
             <Link
               href="/servicios"
-              className="inline-flex justify-center rounded-full bg-[#f7dcc7]/14 px-6 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#fde8dc] transition hover:bg-[#f7dcc7]/24"
+              className="inline-flex justify-center rounded-full border border-[#d7b792]/48 bg-[#f2ddc2]/36 px-6 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#5b4228] transition hover:bg-[#e8cfac]/44"
             >
               Ver detalle completo
             </Link>
