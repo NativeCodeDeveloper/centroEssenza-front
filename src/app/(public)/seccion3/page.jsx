@@ -68,13 +68,13 @@ export default function Seccion3() {
             <div className="grid gap-6 lg:grid-cols-[1fr_22rem] lg:items-end">
               <div>
                 <p className="text-xs uppercase tracking-[0.24em] text-[#9a7750]/72">Experiencias y resultados</p>
-                <h2 className="mt-4 max-w-4xl text-balance text-4xl leading-[1] text-[#5b4229] sm:text-5xl">
+                <h2 className="mt-4 max-w-4xl text-balance text-4xl leading-[1] text-[#4f361d] sm:text-5xl">
                   Historias reales de personas que eligieron un enfoque integral.
                 </h2>
               </div>
-              <div className="rounded-3xl bg-[linear-gradient(160deg,rgba(71,43,36,0.65)_0%,rgba(24,14,12,0.92)_100%)] p-5">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-[#f2d8cb]/66">Acompanamiento</p>
-                <p className="mt-2 text-sm leading-7 text-[#f7dfd4]/82">
+              <div className="rounded-3xl border border-[#d9bea0]/35 bg-[linear-gradient(180deg,rgba(252,245,234,0.95)_0%,rgba(243,230,211,0.9)_100%)] p-5 shadow-[0_16px_36px_-22px_rgba(122,91,55,0.28)]">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-[#8e6e47]/76">Acompanamiento</p>
+                <p className="mt-2 text-sm leading-7 text-[#6a5032]/86">
                   Trabajamos con objetivos claros, seguimiento profesional y una mirada humana en cada etapa.
                 </p>
               </div>
@@ -86,7 +86,7 @@ export default function Seccion3() {
               type="button"
               onClick={() => scrollByAmount("left")}
               aria-label="Desplazar resultados hacia la izquierda"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#2a1a16]/65 text-[#fde8dd] transition duration-300 hover:bg-[#35211c]"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#e6d0b0]/58 text-[#664b2d] transition duration-300 hover:bg-[#dbc29e]/72"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
@@ -94,7 +94,7 @@ export default function Seccion3() {
               type="button"
               onClick={() => scrollByAmount("right")}
               aria-label="Desplazar resultados hacia la derecha"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#2a1a16]/65 text-[#fde8dd] transition duration-300 hover:bg-[#35211c]"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#e6d0b0]/58 text-[#664b2d] transition duration-300 hover:bg-[#dbc29e]/72"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
@@ -107,7 +107,7 @@ export default function Seccion3() {
                 className="w-[86%] shrink-0 snap-start sm:w-[66%] lg:w-[41%]"
                 delayClass={index === 0 ? "delay-100" : "delay-150"}
               >
-                <article className="flex h-full flex-col overflow-hidden rounded-3xl bg-[linear-gradient(180deg,rgba(60,35,30,0.5)_0%,rgba(19,12,10,0.92)_100%)]">
+                <article className="flex h-full flex-col overflow-hidden rounded-3xl border border-[#d8bc9d]/35 bg-[linear-gradient(180deg,rgba(252,245,234,0.95)_0%,rgba(243,230,211,0.9)_100%)] shadow-[0_16px_36px_-22px_rgba(122,91,55,0.28)]">
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <img
                       src={imageErrors[item.image] ? FALLBACK_CASE_IMAGE : item.image}
@@ -121,10 +121,10 @@ export default function Seccion3() {
                         }))
                       }
                     />
-                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,10,8,0.03)_0%,rgba(17,10,8,0.72)_100%)]" />
+                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(42,28,20,0.03)_0%,rgba(42,28,20,0.34)_100%)]" />
                   </div>
                   <div className="flex justify-center p-6">
-                    <h3 className="text-center text-2xl font-medium leading-7 tracking-[0.02em] text-[#fff0e7]">
+                    <h3 className="text-center text-2xl font-medium leading-7 tracking-[0.02em] text-[#573e24]">
                       {item.title}
                     </h3>
                   </div>
@@ -138,12 +138,12 @@ export default function Seccion3() {
       <section id="agenda" className="scroll-mt-24 bg-transparent py-20 text-[#5d462d] sm:py-24">
         <div className="mx-auto w-full max-w-7xl px-5 md:px-8 lg:px-10">
           <RevealOnScroll>
-            <div className="rounded-[2rem] bg-[linear-gradient(145deg,rgba(72,42,35,0.62)_0%,rgba(26,16,13,0.9)_55%,rgba(15,10,8,1)_100%)] px-6 py-14 text-center sm:px-10">
-              <p className="text-xs uppercase tracking-[0.24em] text-[#f3dbcd]/63">Agenda ESSENZA</p>
-              <h2 className="mx-auto mt-4 max-w-3xl text-balance text-4xl leading-[1] text-[#fff1e8] sm:text-5xl">
+            <div className="rounded-[2rem] border border-[#d8bc9d]/35 bg-[linear-gradient(160deg,rgba(252,245,234,0.95)_0%,rgba(243,230,211,0.9)_100%)] px-6 py-14 text-center shadow-[0_18px_40px_-24px_rgba(122,91,55,0.3)] sm:px-10">
+              <p className="text-xs uppercase tracking-[0.24em] text-[#9a7750]/72">Agenda ESSENZA</p>
+              <h2 className="mx-auto mt-4 max-w-3xl text-balance text-4xl leading-[1] text-[#4f361d] sm:text-5xl">
                 Reserva tu evaluacion y recibe un plan integral personalizado.
               </h2>
-              <p className="mx-auto mt-5 max-w-2xl text-sm leading-8 tracking-[0.02em] text-[#f6dfd4]/78 sm:text-base">
+              <p className="mx-auto mt-5 max-w-2xl text-sm leading-8 tracking-[0.02em] text-[#6a5032]/86 sm:text-base">
                 Te guiamos con un enfoque completo para que avances con claridad, confianza y acompanamiento profesional constante.
               </p>
               <Link

@@ -142,7 +142,17 @@ export default function FooterPremiumMedico() {
 
         <div className="mt-8 flex flex-col gap-3 py-4 text-[11px] text-[#7c6140]/72 md:flex-row md:items-center md:justify-between">
           <p>© {new Date().getFullYear()} Centro Integral ESSENZA. Todos los derechos reservados.</p>
-          <p>Bienestar completo con acompanamiento profesional y cercano.</p>
+          <p>
+            Desarrollado por{" "}
+            <a
+              href="https://nativecode.cl"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-[#6b4a23] underline decoration-[#c59b6d] underline-offset-2 transition hover:text-[#4f3217]"
+            >
+              nativecode.cl
+            </a>
+          </p>
         </div>
       </div>
     </footer>

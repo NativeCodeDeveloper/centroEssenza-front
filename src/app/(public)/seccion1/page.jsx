@@ -49,11 +49,11 @@ export default function Seccion1() {
               <RevealOnScroll key={item.title} className="h-full">
                 <article
                   className={[
-                    "h-full rounded-3xl bg-[linear-gradient(180deg,rgba(66,39,33,0.62)_0%,rgba(24,14,12,0.9)_100%)] p-6 transition duration-300 ease-out hover:-translate-y-1",
+                    "h-full rounded-3xl border border-[#d9bea0]/35 bg-[linear-gradient(180deg,rgba(253,246,236,0.92)_0%,rgba(244,232,214,0.9)_100%)] p-6 text-[#5d452c] shadow-[0_16px_36px_-24px_rgba(126,94,58,0.32)] transition duration-300 ease-out hover:-translate-y-1",
                     shifted,
                   ].join(" ")}
                 >
-                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#f6dac7]/12">
+                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#edd4b1]/45">
                     {item.logoSrc ? (
                       <Image
                         src={item.logoSrc}
@@ -64,8 +64,8 @@ export default function Seccion1() {
                       />
                     ) : null}
                   </div>
-                  <h3 className="mt-5 text-2xl font-medium tracking-[0.01em] text-[#fff0e8]">{item.title}</h3>
-                  <p className="mt-3 text-sm leading-7 tracking-[0.02em] text-[#f6dfd4]/80">{item.text}</p>
+                  <h3 className="mt-5 text-2xl font-medium tracking-[0.01em] text-[#5a4127]">{item.title}</h3>
+                  <p className="mt-3 text-sm leading-7 tracking-[0.02em] text-[#705739]/86">{item.text}</p>
                 </article>
               </RevealOnScroll>
             );

@@ -69,7 +69,7 @@ export default function Seccion2() {
           <div className="grid items-end gap-6 lg:grid-cols-[1fr_auto]">
             <div>
               <p className="text-xs uppercase tracking-[0.24em] text-[#9a7750]/72">Especialidades integrales</p>
-              <h2 className="mt-4 max-w-4xl text-balance text-4xl leading-[1] text-[#5b4229] sm:text-5xl">
+              <h2 className="mt-4 max-w-4xl text-balance text-4xl leading-[1] text-[#4f361d] sm:text-5xl">
                 Medicina, psicologia, estetica y terapias en un mismo ecosistema de bienestar.
               </h2>
             </div>
@@ -99,7 +99,7 @@ export default function Seccion2() {
                 <Link
                   href="/reserva-hora"
                   aria-label={`Agendar para ${service.name}`}
-                  className="group flex h-full flex-col overflow-hidden rounded-3xl bg-[linear-gradient(175deg,rgba(58,34,29,0.65)_0%,rgba(22,14,12,0.94)_100%)] transition duration-300 ease-out hover:-translate-y-1"
+                  className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[#d8bc9c]/35 bg-[linear-gradient(180deg,rgba(252,245,234,0.95)_0%,rgba(243,230,211,0.9)_100%)] shadow-[0_16px_36px_-22px_rgba(122,91,55,0.28)] transition duration-300 ease-out hover:-translate-y-1"
                 >
                   <div className={large ? "relative min-h-[20rem] flex-1 overflow-hidden" : "relative aspect-[16/10] overflow-hidden"}>
                     <img
@@ -107,13 +107,13 @@ export default function Seccion2() {
                       alt={service.name}
                       className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,10,8,0.05)_0%,rgba(17,10,8,0.74)_100%)]" />
+                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(42,28,20,0.03)_0%,rgba(42,28,20,0.34)_100%)]" />
                   </div>
                   <div className={large ? "p-7" : "p-5"}>
-                    <h3 className={large ? "text-3xl font-medium tracking-[0.02em] text-[#fff1e8]" : "text-xl font-medium tracking-[0.02em] text-[#fff0e8]"}>
+                    <h3 className={large ? "text-3xl font-medium tracking-[0.02em] text-[#573e24]" : "text-xl font-medium tracking-[0.02em] text-[#573e24]"}>
                       {service.name}
                     </h3>
-                    <p className={large ? "mt-3 text-base leading-8 tracking-[0.02em] text-[#f7dfd3]/84" : "mt-2 text-sm leading-7 tracking-[0.02em] text-[#f7dfd3]/78"}>
+                    <p className={large ? "mt-3 text-base leading-8 tracking-[0.02em] text-[#6b5233]/86" : "mt-2 text-sm leading-7 tracking-[0.02em] text-[#6b5233]/82"}>
                       {service.description || "Atencion personalizada con acompanamiento profesional y seguimiento continuo para resultados sostenibles."}
                     </p>
                   </div>
