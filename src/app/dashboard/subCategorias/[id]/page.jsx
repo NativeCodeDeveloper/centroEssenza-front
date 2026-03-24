@@ -57,7 +57,6 @@ export default function SubCategoria(){
             setDescripcionCategoria(data.descripcionCategoria);
 
             console.log(data);
-            return toast.success('Se ha seleccionado de manera correcta una categoria para ser editada!')
         }catch (e) {
             console.error(e);
         }

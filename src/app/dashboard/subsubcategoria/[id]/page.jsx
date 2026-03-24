@@ -21,7 +21,7 @@ import {subirImagenCloudflare} from "@/FuncionesTranversales/FuncionesCloudflare
 
 export default function SubSubCategoria(){
     const API = process.env.NEXT_PUBLIC_API_URL;
-    const {id} = useParams(); // Este id corresponde a la subcategoría padre
+    const {id} = useParams();
     const router = useRouter();
 
     function irEspecificacion(id_subsubcategoria) {
@@ -30,13 +30,15 @@ export default function SubSubCategoria(){
 
     // Estados para la subcategoría padre
     const [nombreSubcategoriaPadre, setNombreSubcategoriaPadre] = useState("");
-
     // Estados para las subsubcategorías
     const [listaSubSubCategorias, setListaSubSubCategorias] = useState([]);
-    const [nombreSubSubCategoria, setNombreSubSubCategoria] = useState("");
-    const [idSubSubCategoriaSeleccionada, setIdSubSubCategoriaSeleccionada] = useState(0);
-    const [imagenReferencial, setImagenReferencial] = useState(null);
-    const [previzualizacion, setprevizualizacion] = useState('')
+    const [idSubSubCategoriaSeleccionada, setIdSubSubCategoriaSeleccionada] = useState(null);
+
+    const [descripcionSubSubCategoria,setDescripcionSubSubCategorias] = useState("");
+
+
+
+
 
 
     // FUNCION PARA SELECCIONAR SUBCATEGORIA PADRE ESPECIFICA
@@ -63,7 +65,6 @@ export default function SubSubCategoria(){
             if (subcategoria) {
                 setNombreSubcategoriaPadre(subcategoria.descripcionCategoria);
             }
-            return toast.success('Subcategoría cargada correctamente')
         } catch (e) {
             console.error(e);
         }
@@ -113,8 +114,11 @@ export default function SubSubCategoria(){
     }, [id]);
 
 
+
+
+
     // FUNCION PARA INSERTAR SUBSUBCATEGORIA
-    async function insertarSubSubCategoria(descripcionSubSubCategoria, imagenReferencial, id_subcategoria) {
+    async function insertarSubSubCategoria(descripcionSubSubCategoria, id_subcategoria) {
 
         try {
             if (!id_subcategoria || !descripcionSubSubCategoria || descripcionSubSubCategoria === "") {
@@ -128,35 +132,36 @@ export default function SubSubCategoria(){
                     'Content-Type': 'application/json'
                 },
                 mode: 'cors',
-                body: JSON.stringify({descripcionSubSubCategoria,imagenReferencial, id_subcategoria}),
+                body: JSON.stringify({
+                    descripcionSubSubCategoria,
+                    imagenReferencial : "NO USA IMAGEN",
+                    id_subcategoria}),
             })
 
             if (!res.ok) {
-                const txt = await res.text().catch(() => "");
-                console.error("Backend insertarSubSubCategoria no ok:", txt);
                 return toast.error('Ha ocurrido un error, intente más tarde');
-
-            } else {
-
-                const resultadoBackend = await res.json();
-
-                if (resultadoBackend.message === "true") {
-                    await listarSubSubCategorias(id)
-                    setNombreSubSubCategoria("");
-                    setImagenReferencial(null)
-
-                    return toast.success('Sub-subcategoría ingresada correctamente')
-                } else if (resultadoBackend.message === "sindata") {
-                    return toast.error('Debe seleccionar al menos una subcategoría y no debe quedar el campo vacío');
-                } else {
-                    return toast.error('Ha ocurrido un problema, contacte a soporte');
-                }
             }
+
+            const resultadoBackend = await res.json();
+
+            if (resultadoBackend.message === true || resultadoBackend.message.includes(`true`)) {
+                await limpiar()
+                return toast.success(`Se ha ingresado una nueva Sub Sub Categoria`);
+
+            }else{
+                return toast.error('Ha ocurrido un error, contacte a soporte de NativeCode')
+            }
+
         } catch (e) {
             return toast.error('Ha ocurrido un error, contacte a soporte de NativeCode')
         }
     }
 
+    //FUNCION  PARA LIMPIAR LO SELECCIONADO
+    async function limpiar() {
+        await listarSubSubCategorias(id);
+        setDescripcionSubSubCategorias("");
+    }
 
     // FUNCION PARA SELECCIONAR UNA SUBSUBCATEGORIA PARA EDICION
     async function seleccionarSubSubCategoria(id_subsubcategoria) {
@@ -177,17 +182,17 @@ export default function SubSubCategoria(){
 
             if (!res.ok) {
                 return toast.error('Ha ocurrido un error, contacte a soporte de NativeCode')
-            } else {
-                const resultadoData = await res.json();
-                const subsubcategoria = Array.isArray(resultadoData) ? resultadoData[0] : resultadoData;
-
-                if (subsubcategoria) {
-                    setNombreSubSubCategoria(subsubcategoria.descripcionSubSubCategoria);
-                    setIdSubSubCategoriaSeleccionada(subsubcategoria.id_subsubcategoria);
-                    setImagenReferencial(subsubcategoria.imagenReferencial);
-                    return toast.success('Sub-subcategoría seleccionada!')
-                }
             }
+
+            const resultadoBackend = await res.json();
+            if (Array.isArray(resultadoBackend) && resultadoBackend.length > 0) {
+                setDescripcionSubSubCategorias(resultadoBackend[0].descripcionSubSubCategoria);
+                setIdSubSubCategoriaSeleccionada(resultadoBackend[0].id_subsubcategoria);
+                return toast.success(`Sub-Sub categoria Seleccionada`);
+            }else{
+                setDescripcionSubSubCategorias("");
+            }
+
         } catch (e) {
             return toast.error('Ha ocurrido un problema en el servidor, contacte a soporte de NativeCode')
         }
@@ -200,7 +205,6 @@ export default function SubSubCategoria(){
             if (!id_subsubcategoria) {
                 return toast.error('Debe seleccionar una sub-subcategoría para poder eliminarla.');
             }
-
             const res = await fetch(`${API}/subsubcategorias/eliminarSubSubCategoria`, {
                 method: 'POST',
                 headers: {
@@ -210,21 +214,15 @@ export default function SubSubCategoria(){
                 mode: 'cors',
                 body: JSON.stringify({id_subsubcategoria})
             })
-
             if (!res.ok) {
                 return toast.error('Ha ocurrido un error al eliminar la sub-subcategoría, contacte a soporte de NativeCode')
-            } else {
-                const resultadoBackend = await res.json();
-
-                if (resultadoBackend.message === "true") {
-                    await listarSubSubCategorias(id);
-                    limpiarFormulario();
-                    return toast.success('Sub-subcategoría eliminada!')
-                } else if (resultadoBackend.message === "false") {
-                    return toast.error('No se ha podido eliminar la sub-subcategoría, contacte a soporte de NativeCode');
-                } else {
-                    return toast.error('Ha ocurrido un error, contacte a soporte de NativeCode');
-                }
+            }
+            const respuestaBackend = await res.json();
+            if(respuestaBackend.message === true || respuestaBackend.message.includes(`true`)) {
+                await limpiar();
+                return toast.success(`Sub-Sub categoria Eliminada!`);
+            }else{
+                return toast.error('Ha ocurrido un problema en el servidor, contacte a soporte de NativeCode')
             }
         } catch (e) {
             return toast.error('Ha ocurrido un problema en el servidor, contacte a soporte de NativeCode')
@@ -232,18 +230,11 @@ export default function SubSubCategoria(){
     }
 
 
-    // FUNCION PARA LIMPIAR FORMULARIO
-    function limpiarFormulario() {
-        setNombreSubSubCategoria("")
-        setIdSubSubCategoriaSeleccionada(0)
-        setImagenReferencial(null)
-    }
-
 
     // FUNCION PARA ACTUALIZAR SUBSUBCATEGORIA
-    async function actualizarSubSubCategoria(descripcionSubSubCategoria,imagenReferencial, id_subsubcategoria) {
+    async function actualizarSubSubCategoria(descripcionSubSubCategoria, id_subsubcategoria) {
         try {
-            if (!descripcionSubSubCategoria || !id_subsubcategoria || !imagenReferencial) {
+            if (!descripcionSubSubCategoria || !id_subsubcategoria) {
                 return toast.error('Debe completar todos los campos para actualizar la información (No es posible ingresar campos sin datos).')
             }
 
@@ -254,119 +245,26 @@ export default function SubSubCategoria(){
                     'Content-Type': 'application/json'
                 },
                 mode: 'cors',
-                body: JSON.stringify({descripcionSubSubCategoria,imagenReferencial, id_subsubcategoria})
+                body: JSON.stringify({
+                    descripcionSubSubCategoria,
+                    imagenReferencial : `SIN IMAGEN REQUERIDA`
+                    , id_subsubcategoria})
             })
-
             if (!res.ok) {
                 return toast.error('Ha ocurrido un problema interno, contacte a soporte de NativeCode');
-
-            } else {
-
+            }
                 const resultadoBackend = await res.json();
-                if (resultadoBackend.message === "true") {
-                    await listarSubSubCategorias(id);
-                    setImagenReferencial(null);
-                    limpiarFormulario();
-                    return toast.success('Sub-subcategoría actualizada!')
-
-                } else if (resultadoBackend.message === "false") {
-                    return toast.error('No fue posible actualizar la sub-subcategoría')
-
-                } else {
-                    return toast.error('No fue posible actualizar la sub-subcategoría, contacte a soporte de NativeCode')
-                }
+            if(resultadoBackend.message === true || resultadoBackend.message.includes(`true`)) {
+                await limpiar();
+                return toast.success(`Sub-Sub categoria Actualizada!`);
+            }else{
+                return toast.error('Ha ocurrido un problema interno, contacte a soporte de NativeCode')
             }
         } catch (e) {
             return toast.error('Ha ocurrido un problema interno, contacte a soporte de NativeCode')
         }
     }
 
-
-    useEffect(() => {
-        // Si no hay imagen, limpiamos la previsualización
-        if (!imagenReferencial) {
-            setprevizualizacion(null);
-            return;
-        }
-
-        // Si ya viene como string (ID de Cloudflare o URL), construimos la URL completa
-        if (typeof imagenReferencial === "string") {
-            const esUrl = imagenReferencial.startsWith("http");
-            setprevizualizacion(
-                esUrl
-                    ? imagenReferencial
-                    : `https://imagedelivery.net/aCBUhLfqUcxA2yhIBn1fNQ/${imagenReferencial}/card`
-            );
-            return;
-        }
-
-        // Si viene como FileList/Array, tomamos el primer archivo
-        const posibleArchivo =
-            imagenReferencial instanceof File || imagenReferencial instanceof Blob
-                ? imagenReferencial
-                : imagenReferencial?.[0];
-
-        // createObjectURL solo acepta Blob/File
-        if (!(posibleArchivo instanceof Blob)) {
-            setprevizualizacion(null);
-            return;
-        }
-
-        const urlTemporal = URL.createObjectURL(posibleArchivo);
-        setprevizualizacion(urlTemporal);
-
-        return () => URL.revokeObjectURL(urlTemporal);
-    }, [imagenReferencial]);
-
-
-    async function insertarSubCategoriaConImagen(descripcion, imagenReferencial, id) {
-        try {
-            if (!imagenReferencial || !descripcion || !id) {
-                return toast.error('Debe seleccionar una imagen de referencia para la sub-subcategoría');
-            }
-
-            const imagenCloudflareID = await subirImagenCloudflare(imagenReferencial);
-
-            if (!imagenCloudflareID) {
-                return toast.error('No fue posible obtener el ID de Cloudflare (imagen no subida)');
-            }
-
-            const descripcionSubSubCategoria = descripcion;
-            const id_subcategoria = id;
-
-            // Espera la inserción para que cualquier toast/error ocurra dentro del flujo
-            return await insertarSubSubCategoria(descripcionSubSubCategoria, imagenCloudflareID, id_subcategoria);
-        } catch (e) {
-            console.error(e);
-            return toast.error('Error subiendo imagen o insertando la sub-subcategoría');
-        }
-    }
-
-
-
-
-    async function actualizarSubCategoriaConImagen(descripcion, imagenReferencial, id) {
-        try {
-            if (!imagenReferencial || !descripcion || !id) {
-                return toast.error('Debe seleccionar una imagen de referencia para la sub-subcategoría');
-            }
-
-            const imagenCloudflareID = await subirImagenCloudflare(imagenReferencial);
-
-            if (!imagenCloudflareID) {
-                return toast.error('No fue posible obtener el ID de Cloudflare (imagen no subida)');
-            }
-
-            const descripcionSubSubCategoria = descripcion;
-            const id_subcategoria = id;
-
-            // Espera la inserción para que cualquier toast/error ocurra dentro del flujo
-            return await actualizarSubSubCategoria(descripcionSubSubCategoria, imagenCloudflareID, id_subcategoria);
-        } catch (e) {
-            console.error(e);
-            return toast.error('Error subiendo imagen o insertando la sub-subcategoría');
-        }
-    }
 
 
 
@@ -410,8 +308,8 @@ export default function SubSubCategoria(){
                             <label className="text-sm font-medium text-slate-700">Nombre de sub-subcategoría</label>
                             <div className="rounded-xl border border-slate-200 bg-white px-3 py-2 focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-100">
                                 <ShadcnInput
-                                    value={nombreSubSubCategoria}
-                                    onChange={(e)=> setNombreSubSubCategoria(e.target.value)}
+                                    value={descripcionSubSubCategoria}
+                                    onChange={(e)=> setDescripcionSubSubCategorias(e.target.value)}
                                     className="w-full border-0 bg-transparent p-0 text-slate-900 placeholder:text-slate-400 focus:ring-0"
                                     placeholder="Ej: XS MUJER, M HOMBRE, etc."
                                 />
@@ -423,50 +321,6 @@ export default function SubSubCategoria(){
 
 
 
-                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-
-                            {/* Imagen */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-slate-700">Imagen referencial</label>
-                                <div className="rounded-xl border border-slate-200 bg-white px-3 py-3 focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-100">
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        className="block w-full text-sm text-slate-700 file:mr-4 file:rounded-lg file:border-0 file:bg-slate-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-slate-700 hover:file:bg-slate-200"
-                                        onChange={(e) => {
-                                            const archivo = e.target.files?.[0];
-                                            if (!archivo) {
-                                                return;
-                                            }
-                                            setImagenReferencial(archivo);
-                                        }}
-                                    />
-                                </div>
-                                <p className="text-xs leading-relaxed text-slate-500">
-                                    Selecciona una imagen de referencia para las sub-categorías que se mostrarán en el catálogo principal.
-                                </p>
-                            </div>
-
-                            {/* Preview */}
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-slate-700">Previsualización</label>
-                                <div className="flex h-44 w-full items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm">
-                                    {previzualizacion ? (
-                                        <img
-                                            src={previzualizacion}
-                                            alt="Previsualización"
-                                            className="h-full w-full object-cover"
-                                        />
-                                    ) : (
-                                        <p className="px-4 text-center text-sm text-slate-500">
-                                            No hay imagen seleccionada
-                                        </p>
-                                    )}
-                                </div>
-                            </div>
-
-                        </div>
-
 
 
 
@@ -476,7 +330,7 @@ export default function SubSubCategoria(){
                                     <ShadcnButton
                                         nombre={'Ingresar Sub-Subcategoría'}
 
-                                        funcion={()=> insertarSubCategoriaConImagen(nombreSubSubCategoria,imagenReferencial, id)}
+                                        funcion={()=>insertarSubSubCategoria(descripcionSubSubCategoria, id)}
 
                                         className="w-full"
                                     />
@@ -486,7 +340,7 @@ export default function SubSubCategoria(){
                                 <div className="w-full sm:w-auto">
                                     <ShadcnButton
                                         nombre={'Limpiar'}
-                                        funcion={()=> limpiarFormulario()}
+                                        funcion={()=> limpiar()}
                                         className="w-full"
                                     />
                                 </div>
@@ -496,7 +350,7 @@ export default function SubSubCategoria(){
                                 {idSubSubCategoriaSeleccionada > 0 && (
                                     <ShadcnButton
                                         nombre={'Actualizar Sub-Subcategoría'}
-                                        funcion={()=> actualizarSubCategoriaConImagen(nombreSubSubCategoria,imagenReferencial, idSubSubCategoriaSeleccionada)}
+                                        funcion={()=> actualizarSubSubCategoria(descripcionSubSubCategoria, idSubSubCategoriaSeleccionada)}
                                         className="w-full"
                                     />
                                 )}
@@ -523,7 +377,6 @@ export default function SubSubCategoria(){
                             </TableCaption>
                             <TableHeader>
                                 <TableRow className="bg-slate-50">
-                                    <TableHead className="text-slate-700">Imagen Referencial</TableHead>
                                     <TableHead className="text-slate-700">Sub-Subcategoría</TableHead>
                                     <TableHead className="text-slate-700">Acciones</TableHead>
                                     <TableHead className="text-slate-700"></TableHead>
@@ -537,14 +390,6 @@ export default function SubSubCategoria(){
                                             className="transition-colors hover:bg-slate-50"
                                         >
 
-
-                                            <TableCell className="font-medium text-slate-900">
-                                                <img
-                                                    src={`https://imagedelivery.net/aCBUhLfqUcxA2yhIBn1fNQ/${subsubcategoria.imagenReferencial}/mini`}
-                                                    alt='miniatura'
-                                                    className='h-20 w-20 object-cover rounded-lg'
-                                                />
-                                            </TableCell>
 
 
                                             <TableCell className="font-medium text-slate-900">
