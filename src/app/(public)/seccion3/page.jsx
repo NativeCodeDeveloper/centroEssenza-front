@@ -147,7 +147,7 @@ export default function Seccion3() {
                 Te guiamos con un enfoque completo para que avances con claridad, confianza y acompanamiento profesional constante.
               </p>
               <Link
-                href="/reserva-hora"
+                href="/agendaProfesionales"
                 aria-label="Reservar hora"
                 className="mt-8 inline-flex w-full max-w-xs justify-center rounded-full border border-[#f6dcc7]/45 bg-[linear-gradient(135deg,#f7dfcc_0%,#e7b27c_100%)] px-8 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#2f1a12] transition duration-300 ease-out hover:brightness-105"
               >

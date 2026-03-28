@@ -3,11 +3,13 @@
 import Link from "next/link";
 import RevealOnScroll from "@/Componentes/RevealOnScroll";
 import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function Seccion2() {
   const API = process.env.NEXT_PUBLIC_API_URL;
   const [infoData, setInfoData] = useState([]);
+  const scrollerRef = useRef(null);
 
   const fallbackServices = [
     {
@@ -62,6 +64,17 @@ export default function Seccion2() {
 
   const content = services.length > 0 ? services : fallbackServices;
 
+  const scrollByAmount = (direction) => {
+    const container = scrollerRef.current;
+    if (!container) return;
+    const firstCardWidth = container.firstElementChild?.clientWidth ?? 0;
+    const styles = window.getComputedStyle(container);
+    const gap = parseFloat(styles.columnGap || styles.gap || "0");
+    const amount =
+      firstCardWidth > 0 ? Math.round(firstCardWidth + gap) : Math.round(container.clientWidth * 0.82);
+    container.scrollBy({ left: direction === "left" ? -amount : amount, behavior: "smooth" });
+  };
+
   return (
     <section id="servicios" className="scroll-mt-24 bg-transparent py-22 text-[#5d462d] sm:py-28">
       <div className="mx-auto w-full max-w-7xl px-5 md:px-8 lg:px-10">
@@ -82,45 +95,69 @@ export default function Seccion2() {
           </div>
         </RevealOnScroll>
 
-        <div className="mt-12 grid gap-4 lg:grid-cols-6">
-          {content.map((service, index) => {
-            const large = index === 0;
-            const medium = index === 1 || index === 2;
+        <div className="mt-8 flex items-center justify-end gap-2">
+          <button
+            type="button"
+            onClick={() => scrollByAmount("left")}
+            aria-label="Desplazar servicios hacia la izquierda"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#e6d0b0]/58 text-[#664b2d] transition duration-300 hover:bg-[#dbc29e]/72"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollByAmount("right")}
+            aria-label="Desplazar servicios hacia la derecha"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#e6d0b0]/58 text-[#664b2d] transition duration-300 hover:bg-[#dbc29e]/72"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
 
-            return (
-              <RevealOnScroll
-                key={service.id ?? service.name}
-                delayClass={index % 2 === 0 ? "delay-100" : "delay-150"}
-                className={[
-                  "h-full",
-                  large ? "lg:col-span-3 lg:row-span-2" : medium ? "lg:col-span-3" : "lg:col-span-2",
-                ].join(" ")}
+        <div
+          ref={scrollerRef}
+          className="hide-scrollbar mt-6 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2"
+        >
+          {content.map((service, index) => (
+            <RevealOnScroll
+              key={service.id ?? service.name}
+              className="w-[86%] shrink-0 snap-start sm:w-[66%] lg:w-[41%]"
+              delayClass={index % 2 === 0 ? "delay-100" : "delay-150"}
+            >
+              <Link
+                href="/agendaProfesionales"
+                aria-label={`Agendar para ${service.name}`}
+                className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[#d8bc9c]/35 bg-[linear-gradient(180deg,rgba(252,245,234,0.95)_0%,rgba(243,230,211,0.9)_100%)] shadow-[0_16px_36px_-22px_rgba(122,91,55,0.28)] transition duration-300 ease-out hover:-translate-y-1"
               >
-                <Link
-                  href="/reserva-hora"
-                  aria-label={`Agendar para ${service.name}`}
-                  className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[#d8bc9c]/35 bg-[linear-gradient(180deg,rgba(252,245,234,0.95)_0%,rgba(243,230,211,0.9)_100%)] shadow-[0_16px_36px_-22px_rgba(122,91,55,0.28)] transition duration-300 ease-out hover:-translate-y-1"
-                >
-                  <div className={large ? "relative min-h-[20rem] flex-1 overflow-hidden" : "relative aspect-[16/10] overflow-hidden"}>
-                    <img
-                      src={service.image}
-                      alt={service.name}
-                      className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(42,28,20,0.03)_0%,rgba(42,28,20,0.34)_100%)]" />
+                <div className="relative aspect-16/10 overflow-hidden">
+                  <img
+                    src={service.image}
+                    alt={service.name}
+                    className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(42,28,20,0.03)_0%,rgba(42,28,20,0.34)_100%)]" />
+                </div>
+                <div className="flex flex-1 flex-col p-6">
+                  <h3 className="text-xl font-medium tracking-[0.02em] text-[#573e24]">
+                    {service.name}
+                  </h3>
+                  <p className="mt-2 flex-1 text-sm leading-7 tracking-[0.02em] text-[#6b5233]/82">
+                    {service.description || "Atencion personalizada con acompanamiento profesional y seguimiento continuo para resultados sostenibles."}
+                  </p>
+                  <div className="mt-5 flex items-center justify-between border-t border-[#d8bc9d]/36 pt-4">
+                    <span className="text-[11px] font-medium uppercase tracking-[0.2em] text-[#8a663d] transition-colors duration-300 group-hover:text-[#6f4d28]">
+                      Agendar hora
+                    </span>
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full border border-[#d4b38f]/36 bg-[#efdbc0]/42 transition-all duration-300 group-hover:border-[#bf9568]/44 group-hover:bg-[#e8c7a1]/48">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-[#7a5a35] transition-all duration-300 group-hover:translate-x-px group-hover:text-[#5f411f]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
                   </div>
-                  <div className={large ? "p-7" : "p-5"}>
-                    <h3 className={large ? "text-3xl font-medium tracking-[0.02em] text-[#573e24]" : "text-xl font-medium tracking-[0.02em] text-[#573e24]"}>
-                      {service.name}
-                    </h3>
-                    <p className={large ? "mt-3 text-base leading-8 tracking-[0.02em] text-[#6b5233]/86" : "mt-2 text-sm leading-7 tracking-[0.02em] text-[#6b5233]/82"}>
-                      {service.description || "Atencion personalizada con acompanamiento profesional y seguimiento continuo para resultados sostenibles."}
-                    </p>
-                  </div>
-                </Link>
-              </RevealOnScroll>
-            );
-          })}
+                </div>
+              </Link>
+            </RevealOnScroll>
+          ))}
         </div>
       </div>
     </section>
