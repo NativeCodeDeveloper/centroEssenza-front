@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useSignIn } from "@clerk/nextjs";
+import { useSignIn, useAuth } from "@clerk/nextjs";
 import { Michroma } from "next/font/google";
 import { motion } from "framer-motion";
 import OrbBackground from "@/components/OrbBackground";
@@ -33,13 +33,20 @@ const trustItems = [
 export default function Page() {
   const router = useRouter();
   const { isLoaded, signIn, setActive } = useSignIn();
+  const { isSignedIn } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  if (!isLoaded) {
+  useEffect(() => {
+    if (isLoaded && isSignedIn) {
+      router.replace("/dashboard");
+    }
+  }, [isLoaded, isSignedIn, router]);
+
+  if (!isLoaded || isSignedIn) {
     return (
       <main className="grid min-h-screen place-items-center bg-white">
         <div className="text-sm text-slate-400">Cargando...</div>

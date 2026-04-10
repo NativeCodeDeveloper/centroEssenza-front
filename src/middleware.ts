@@ -1,5 +1,5 @@
 
-/*
+
 
 // ----------------------------------------------------------
 // MIDLEWARE SIN RESTRICCIONES NO BLOQUEOS (ABIERTO TOTAL)
@@ -16,8 +16,8 @@ export const config = {
 matcher: ['/dashboard/:path*'], // o simplemente [] si quieres que no aplique a ninguna
 }
 
-*/
 
+/*
 
 
 
@@ -69,3 +69,4 @@ export default clerkMiddleware(async (auth, req) => {
 export const config = {
     matcher: ['/dashboard/:path*'],
 }
+*/

@@ -14,6 +14,8 @@ import {CheckboxIcon} from "@radix-ui/react-icons";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import {InfoButton} from "@/Componentes/InfoButton";
+import {InputTextDinamic} from "@/Componentes/InputTextDinamic";
+import {ButtonDinamic} from "@/Componentes/ButtonDinamic";
 
 
 export default function Paciente() {
@@ -77,6 +79,40 @@ export default function Paciente() {
     const [consentimientoFirmado, setConsentimientoFirmado] = useState("");
 
     const [listaFichas, setListaFichas] = useState([]);
+
+
+    const[profesionalNombre, setProfesionalNombre] = useState("");
+
+
+    async function seleccionarSimilitudProfesional(id_paciente,observaciones) {
+        try {
+            const res = await fetch(`${API}/ficha/seleccionarFichasPacienteSimilitudProfesional`,{
+                method: "POST",
+                headers: {Accept: "application/json",
+                "Content-Type": "application/json"},
+                mode: "cors",
+                body: JSON.stringify({
+                    id_paciente,observaciones
+                }),
+                cache: "no-cache",
+            })
+
+            if (!res.ok) {
+                return toast.error(`Sin respuesta del servidor`);
+            }
+
+            const respuestaBackend = await res.json();
+            if (Array.isArray(respuestaBackend) && respuestaBackend.length > 0) {
+                setListaFichas(respuestaBackend);
+                return toast.success(`Similitud encontrada`);
+            }else{
+                return toast.success(`No se han encontrado similitudes`);
+            }
+
+        }catch(error) {
+            return toast.error(`Ha ocurrido un problema contacte al administrador del sistema`);
+        }
+    }
 
     async function eliminarFicha(id_ficha) {
         try {
@@ -394,7 +430,51 @@ export default function Paciente() {
                             Nueva Ficha
                         </button>
                     </div>
+
+
                 </div>
+
+
+                {/* Sección de Filtro por Profesional */}
+                <div className="mt-8 bg-white border border-slatemente-200 rounded-xl shadow-sm overflow-hidden">
+                    {/* Header de la sección de búsqueda */}
+                    <div className="bg-slate-50/50 px-5 py-3 border-b border-slate-100">
+                        <h3 className="text-sm font-semibold text-slate-700 tracking-wide uppercase flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            Filtro de Historial
+                        </h3>
+                    </div>
+                    {/* Cuerpo del buscador */}
+                    <div className="p-5 md:p-6">
+                        <div className="flex flex-col sm:flex-row gap-3 items-end">
+                            <div className="flex-1 w-full">
+                                <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5 ml-1">
+                                    Nombre del Profesional
+                                </label>
+                                <InputTextDinamic
+                                    className="w-full transition-all duration-200 focus:ring-2 focus:ring-sky-500/20 border-slate-300"
+                                    value={profesionalNombre}
+                                    onChange={(e) => setProfesionalNombre(e.target.value)}
+                                    placeholder="Ej: Dra. Andrea Moran"
+                                />
+                            </div>
+
+                            <ButtonDinamic
+                                onClick={() => seleccionarSimilitudProfesional(id_paciente, profesionalNombre)}
+                                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-sky-600 to-cyan-500 rounded-lg hover:from-sky-700 hover:to-cyan-600 transition-all duration-150 shadow-md"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                Buscar Fichas
+                            </ButtonDinamic>
+                        </div>
+                    </div>
+                </div>
+
+                <br/>
 
                 {/* Listado de fichas */}
                 <div className="space-y-4">
