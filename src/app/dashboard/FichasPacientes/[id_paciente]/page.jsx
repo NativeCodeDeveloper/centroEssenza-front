@@ -25,6 +25,10 @@ export default function Paciente() {
     const API = process.env.NEXT_PUBLIC_API_URL;
     const router = useRouter();
     const [mostrarFormulario, setMostrarFormulario] = useState(false);
+    const [mostrarTelemedicina, setMostrarTelemedicina] = useState(false);
+    const [linkTelemedicina, setLinkTelemedicina] = useState("");
+    const [asuntoTelemedicina, setAsuntoTelemedicina] = useState("Enlace de Telemedicina");
+    const [enviandoTelemedicina, setEnviandoTelemedicina] = useState(false);
 
     function nuevaFichaClinica() {
         router.push(`/dashboard/NuevaFicha/${id_paciente}`);
@@ -50,6 +54,55 @@ export default function Paciente() {
             email: paciente.correo || "",
         });
         router.push(`/dashboard/calendario?${params.toString()}`);
+    }
+
+    async function enviarLinkTelemedicina() {
+        const paciente = detallePaciente[0];
+        if (!paciente?.correo) {
+            return toast.error("El paciente no tiene un correo registrado.");
+        }
+
+        if (!linkTelemedicina.trim()) {
+            return toast.error("Debe ingresar un link de telemedicina.");
+        }
+
+        try {
+            setEnviandoTelemedicina(true);
+
+            const res = await fetch(`${API}/correo/telemedicina`, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: paciente.correo,
+                    nombrePaciente: paciente.nombre || "",
+                    apellidoPaciente: paciente.apellido || "",
+                    asunto: asuntoTelemedicina.trim() || "Enlace de Telemedicina",
+                    linkTelemedicina: linkTelemedicina.trim(),
+                }),
+                mode: "cors"
+            });
+
+            const data = await res.json().catch(() => ({}));
+
+            if (!res.ok) {
+                return toast.error(data?.error || "No fue posible enviar el correo de telemedicina.");
+            }
+
+            if (data?.message === true) {
+                setLinkTelemedicina("");
+                return toast.success("Correo de telemedicina enviado correctamente.");
+            }
+
+            return toast.error("No fue posible enviar el correo de telemedicina.");
+        } catch (error) {
+            console.log(error);
+            return toast.error("Sin respuesta del servidor al enviar telemedicina.");
+        } finally {
+            setEnviandoTelemedicina(false);
+        }
     }
 
     const [nombre, setNombre] = useState("");
@@ -405,6 +458,15 @@ export default function Paciente() {
                             Cargar Fichas
                         </button>
 
+                        <button
+                            onClick={() => setMostrarTelemedicina((prev) => !prev)}
+                            className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg hover:bg-emerald-100 transition-all duration-150">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            </svg>
+                            Telemedicina
+                        </button>
+
 
 
 
@@ -433,6 +495,64 @@ export default function Paciente() {
 
 
                 </div>
+
+                {mostrarTelemedicina && (
+                    <div className="mb-6 rounded-xl border border-emerald-200 bg-white shadow-sm overflow-hidden">
+                        <div className="bg-emerald-50 px-5 py-3 border-b border-emerald-100 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            </svg>
+                            <h3 className="text-sm font-semibold text-emerald-800 tracking-wide uppercase">Envío de Telemedicina</h3>
+                        </div>
+
+                        <div className="p-5 md:p-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
+                                <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Correo del paciente</p>
+                                <p className="mt-1 text-sm font-medium text-slate-700">{detallePaciente[0]?.correo || "Sin correo registrado"}</p>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">
+                                    Asunto del correo
+                                </label>
+                                <ShadcnInput
+                                    value={asuntoTelemedicina}
+                                    onChange={(e) => setAsuntoTelemedicina(e.target.value)}
+                                    placeholder="Enlace de Telemedicina"
+                                />
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">
+                                    Link de telemedicina
+                                </label>
+                                <ShadcnInput
+                                    value={linkTelemedicina}
+                                    onChange={(e) => setLinkTelemedicina(e.target.value)}
+                                    placeholder="https://meet.google.com/... o enlace de Zoom"
+                                />
+                            </div>
+
+                            <div className="md:col-span-2 flex flex-wrap items-center gap-2">
+                                <button
+                                    onClick={enviarLinkTelemedicina}
+                                    disabled={enviandoTelemedicina}
+                                    className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-500 rounded-lg hover:from-emerald-700 hover:to-teal-600 transition-all duration-150 shadow-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8m-18 8h18a2 2 0 002-2V8a2 2 0 00-2-2H3a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                    </svg>
+                                    {enviandoTelemedicina ? "Enviando..." : "Enviar por correo"}
+                                </button>
+
+                                <button
+                                    onClick={() => setMostrarTelemedicina(false)}
+                                    className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-slate-600 bg-slate-50 border border-slate-200 rounded-lg hover:bg-slate-100 transition-all duration-150">
+                                    Cerrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
 
                 {/* Sección de Filtro por Profesional */}

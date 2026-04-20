@@ -151,6 +151,8 @@ function CalendarioContent() {
     const [rut, setRut] = useState("");
     const [telefono, setTelefono] = useState("");
     const [email, setEmail] = useState("");
+    const [fechaNacimientoPaciente, setFechaNacimientoPaciente] = useState("");
+    const [sexoPaciente, setSexoPaciente] = useState("");
 
     // Precargar datos del paciente si vienen por query params
     useEffect(() => {
@@ -186,6 +188,8 @@ function CalendarioContent() {
         rut: "",
         telefono: "",
         email: "",
+        fechaNacimientoPaciente: "",
+        sexoPaciente: "",
     });
 
     async function seleccionarTodosProfesionalesCalendario() {
@@ -243,6 +247,10 @@ function CalendarioContent() {
     function convertirAFechaCalendario(fechaISO, hora) {
         const soloFecha = fechaISO.slice(0, 10);
         return new Date(`${soloFecha}T${hora}`);
+    }
+
+    function normalizarRut(rutValue) {
+        return (rutValue ?? "").replace(/[^a-zA-Z0-9]/g, "").trim().toUpperCase();
     }
 
     function isOverlapping(start, end, ignoredReservaId = null) {
@@ -304,6 +312,8 @@ function CalendarioContent() {
             rut: "",
             telefono: "",
             email: "",
+            fechaNacimientoPaciente: "",
+            sexoPaciente: "",
         });
     }
 
@@ -329,6 +339,8 @@ function CalendarioContent() {
             rut,
             telefono,
             email,
+            fechaNacimientoPaciente,
+            sexoPaciente,
         });
         setFloatingDraft({
             id: "draft-selection",
@@ -470,7 +482,7 @@ function CalendarioContent() {
     }, [draggingPopup]);
     
 
-    async function insertarNuevaReserva(nombrePaciente, apellidoPaciente, rut, telefono, email, fechaInicio, horaInicio, fechaFinalizacion, horaFinalizacion,id_profesional) {
+    async function insertarNuevaReserva(nombrePaciente, apellidoPaciente, rut, telefono, email, fechaNacimientoPaciente, sexoPaciente, fechaInicio, horaInicio, fechaFinalizacion, horaFinalizacion,id_profesional) {
         try {
             if (!nombrePaciente || !apellidoPaciente || !rut || !telefono || !email || !fechaInicio || !horaInicio || !horaFinalizacion || !id_profesional) {
                 toast.error('Debe llenar todos los campos');
@@ -497,11 +509,25 @@ function CalendarioContent() {
                     method: "POST",
                     headers: {Accept: "application/json", "Content-Type": "application/json"},
                     mode: "cors",
-                    body: JSON.stringify({nombrePaciente, apellidoPaciente, rut, telefono, email, fechaInicio, horaInicio, fechaFinalizacion, horaFinalizacion, estadoReserva: "reservada" ,id_profesional})
+                    body: JSON.stringify({
+                        nombrePaciente,
+                        apellidoPaciente,
+                        rut,
+                        telefono,
+                        email,
+                        fechaNacimientoPaciente,
+                        sexoPaciente,
+                        fechaInicio,
+                        horaInicio,
+                        fechaFinalizacion,
+                        horaFinalizacion,
+                        estadoReserva: "reservada",
+                        id_profesional
+                    })
                 });
                 const respuestaBackend = await res.json();
                 if (respuestaBackend.message === true) {
-                    setNombrePaciente(""); setApellidoPaciente(""); setTelefono(""); setRut(""); setEmail("");
+                    setNombrePaciente(""); setApellidoPaciente(""); setTelefono(""); setRut(""); setEmail(""); setFechaNacimientoPaciente(""); setSexoPaciente("");
                     await refrescarCalendario();
                     toast.success("Se ha ingresado correctamente el agendamiento");
                     return true;
@@ -522,6 +548,72 @@ function CalendarioContent() {
             return false;
         }
         return false;
+    }
+
+    async function crearRegistroClinico() {
+        try {
+            const rutNormalizado = normalizarRut(rut);
+
+            if (!nombrePaciente || !apellidoPaciente || !rutNormalizado || !telefono || !email) {
+                return toast.error("Debe completar nombre, apellido, RUT, teléfono y correo.");
+            }
+
+            const respuestaRut = await fetch(`${API}/pacientes/contieneRut`, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({rut: rutNormalizado}),
+                mode: "cors",
+            });
+
+            if (respuestaRut.ok) {
+                const pacientesCoincidentes = await respuestaRut.json();
+                const pacienteExistente = Array.isArray(pacientesCoincidentes)
+                    && pacientesCoincidentes.some((paciente) => normalizarRut(paciente?.rut) === rutNormalizado);
+
+                if (pacienteExistente) {
+                    return toast.error("El paciente ya se encuentra ingresado.");
+                }
+            }
+
+            const respuestaInsercion = await fetch(`${API}/pacientes/pacientesInsercion`, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    nombre: nombrePaciente.trim(),
+                    apellido: apellidoPaciente.trim(),
+                    rut: rutNormalizado,
+                    nacimiento: fechaNacimientoPaciente || fechaInicio || formatearFechaLocal(new Date()),
+                    sexo: sexoPaciente || "Sin especificar",
+                    prevision_id: 1,
+                    telefono: telefono.trim(),
+                    correo: email.trim(),
+                    direccion: "Sin dirección",
+                    pais: "Chile",
+                }),
+                mode: "cors",
+            });
+
+            if (!respuestaInsercion.ok) {
+                return toast.error("No fue posible crear el registro clínico.");
+            }
+
+            const data = await respuestaInsercion.json();
+
+            if (data?.message === true) {
+                return toast.success("Registro clínico creado correctamente.");
+            }
+
+            return toast.error("No fue posible crear el registro clínico.");
+        } catch (error) {
+            console.log(error);
+            return toast.error("Sin respuesta del servidor contacte a soporte.");
+        }
     }
 
     async function actualizarReservaDesdeCalendario(reservaOriginal, start, end) {
@@ -661,7 +753,7 @@ function CalendarioContent() {
             if (!res.ok) return toast.error("El servidor no responde");
             const respuestaBackend = await res.json();
             if (respuestaBackend.message === true) {
-                setNombrePaciente(""); setApellidoPaciente(""); setTelefono(""); setRut(""); setEmail("");
+                setNombrePaciente(""); setApellidoPaciente(""); setTelefono(""); setRut(""); setEmail(""); setFechaNacimientoPaciente(""); setSexoPaciente("");
                 await refrescarCalendario();
                 return toast.success("Se ha actualizado la reserva correctamente");
             }
@@ -707,7 +799,7 @@ function CalendarioContent() {
     }, [id_reserva]);
 
     function limpiarData() {
-        setNombrePaciente(""); setApellidoPaciente(""); setTelefono(""); setRut(""); setEmail("");
+        setNombrePaciente(""); setApellidoPaciente(""); setTelefono(""); setRut(""); setEmail(""); setFechaNacimientoPaciente(""); setSexoPaciente("");
     }
 
     function iniciarDragPopup(event) {
@@ -730,6 +822,8 @@ function CalendarioContent() {
             popupForm.rut,
             popupForm.telefono,
             popupForm.email,
+            popupForm.fechaNacimientoPaciente,
+            popupForm.sexoPaciente,
             formatearFechaLocal(selectionDraft.start),
             selectionDraft.start.toTimeString().slice(0, 8),
             formatearFechaLocal(selectionDraft.end),
@@ -742,6 +836,8 @@ function CalendarioContent() {
             setRut(popupForm.rut);
             setTelefono(popupForm.telefono);
             setEmail(popupForm.email);
+            setFechaNacimientoPaciente(popupForm.fechaNacimientoPaciente);
+            setSexoPaciente(popupForm.sexoPaciente);
             limpiarSeleccionTemporal();
         }
     }
@@ -843,6 +939,27 @@ function CalendarioContent() {
                                     <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-slate-500">Teléfono</label>
                                     <ShadcnInput value={telefono ?? ""} onChange={(e) => setTelefono(e.target.value)}/>
                                 </div>
+                                <div>
+                                    <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-slate-500">Fecha de nacimiento</label>
+                                    <ShadcnInput
+                                        type="date"
+                                        value={fechaNacimientoPaciente ?? ""}
+                                        onChange={(e) => setFechaNacimientoPaciente(e.target.value)}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-slate-500">Sexo</label>
+                                    <select
+                                        value={sexoPaciente}
+                                        onChange={(e) => setSexoPaciente(e.target.value)}
+                                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300 focus-visible:ring-offset-2"
+                                    >
+                                        <option value="">Sin especificar</option>
+                                        <option value="Femenino">Femenino</option>
+                                        <option value="Masculino">Masculino</option>
+                                        <option value="No binario">No binario</option>
+                                    </select>
+                                </div>
 
                                 <div className="sm:col-span-2">
                                     <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-slate-500">Profesional</label>
@@ -911,7 +1028,16 @@ function CalendarioContent() {
                         {/* Botones de acción */}
                         <div className="flex flex-wrap gap-2 pt-0.5">
                             <button
-                                onClick={() => insertarNuevaReserva(nombrePaciente, apellidoPaciente, rut, telefono, email, fechaInicio, horaInicio, fechaFinalizacion, horaFinalizacion, id_profesional)}
+                                onClick={crearRegistroClinico}
+                                className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-sm font-medium text-emerald-700 transition-colors duration-150 hover:bg-emerald-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                Crear Registro Clínico
+                            </button>
+
+                            <button
+                                onClick={() => insertarNuevaReserva(nombrePaciente, apellidoPaciente, rut, telefono, email, fechaNacimientoPaciente, sexoPaciente, fechaInicio, horaInicio, fechaFinalizacion, horaFinalizacion, id_profesional)}
                                 className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:from-sky-700 hover:to-cyan-600">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/>
@@ -1174,6 +1300,28 @@ function CalendarioContent() {
                                             className="h-9 w-full rounded-xl border border-slate-200 bg-white px-3 text-[12px] text-slate-800 outline-none transition-all focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
                                             placeholder="correo@dominio.com"
                                         />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-[11px] text-slate-500">Fecha de nacimiento</label>
+                                        <input
+                                            type="date"
+                                            value={popupForm.fechaNacimientoPaciente}
+                                            onChange={(e) => setPopupForm((prev) => ({...prev, fechaNacimientoPaciente: e.target.value}))}
+                                            className="h-9 w-full rounded-xl border border-slate-200 bg-white px-3 text-[12px] text-slate-800 outline-none transition-all focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-[11px] text-slate-500">Sexo</label>
+                                        <select
+                                            value={popupForm.sexoPaciente}
+                                            onChange={(e) => setPopupForm((prev) => ({...prev, sexoPaciente: e.target.value}))}
+                                            className="h-9 w-full rounded-xl border border-slate-200 bg-white px-3 text-[12px] text-slate-800 outline-none transition-all focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                        >
+                                            <option value="">Sin especificar</option>
+                                            <option value="Femenino">Femenino</option>
+                                            <option value="Masculino">Masculino</option>
+                                            <option value="No binario">No binario</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
