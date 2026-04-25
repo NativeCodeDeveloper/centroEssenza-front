@@ -61,6 +61,10 @@ const [id_profesional, setId_profesional] = useState("");
         return new Date(`${soloFecha}T${hora}`);
     }
 
+    function construirFechaHora(fecha, hora) {
+        return new Date(`${fecha}T${hora}`);
+    }
+
 
 
     async function buscarPorProfesionalBloqueo() {
@@ -102,6 +106,17 @@ const [id_profesional, setId_profesional] = useState("");
             return toast.error("Deben completarse todos los campos para ingresar el bloqueo al sistema.")
         }
 
+        const inicioBloqueo = construirFechaHora(fechaInicio, horaInicio);
+        const finBloqueo = construirFechaHora(fechaFinalizacion, horaFinalizacion);
+
+        if (Number.isNaN(inicioBloqueo.getTime()) || Number.isNaN(finBloqueo.getTime())) {
+            return toast.error("Las fechas u horas ingresadas no son validas.");
+        }
+
+        if (finBloqueo <= inicioBloqueo) {
+            return toast.error("La fecha y hora de termino debe ser mayor a la fecha y hora de inicio.");
+        }
+
         const res = await fetch(`${API}/bloqueoAgenda/InsertarBloqueo`,{
             method: 'POST',
             headers: {Accept: 'application/json',
@@ -124,6 +139,8 @@ const [id_profesional, setId_profesional] = useState("");
                     setHoraFinalizacion("");
                     await verTodosLosBloqueos();
                     return toast.success('Se ha ingresado con exito el bloqueo al sistema. ')
+                }else if (respuestaBackend.message === "sindisponibilidad") {
+                    return toast.error("Ya existe un bloqueo que se superpone con ese rango para el profesional seleccionado.");
                 }else {
                     return toast.error("No se ha podido insertar bloqueo al sistema. Intente mas tarde.")
                 }

@@ -14,6 +14,14 @@ function formatDateToYMD(date) {
     return `${y}-${m}-${d}`;
 }
 
+function normalizarNombre(nombre = "") {
+    return nombre
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim()
+        .toLowerCase();
+}
+
 export default function CalendarioMensualHoras() {
     const {id_profesional} = useParams();
     const [nombreProfesional, setNombreProfesional] = useState("");
@@ -55,6 +63,11 @@ export default function CalendarioMensualHoras() {
         setFechaFinalizacion
     } = useAgenda();
 
+    const nombreProfesionalNormalizado = normalizarNombre(nombreProfesional);
+    const esPatriciaGuevara = nombreProfesionalNormalizado.includes("patricia guevara");
+    const duracionAtencionMin = esPatriciaGuevara ? 20 : 60;
+    const descansoEntreAtencionesMin = esPatriciaGuevara ? 0 : 10;
+
 
     /* ---------- utilidades ---------- */
     const generarDiasMes = () => {
@@ -69,10 +82,10 @@ export default function CalendarioMensualHoras() {
         return dias;
     };
 
-    // Genera los bloques de atención (60 min) según el día de la semana
+    // Genera los bloques de atención según el día de la semana
     // Lunes a Sábado: 09:00 - 22:00
     // Domingo: No disponible
-    // Los inicios van separados por 70 minutos (60 atención + 10 descanso), pero los descansos no se muestran.
+    // Patricia Guevara usa bloques consecutivos de 20 min; el resto mantiene 60 min + 10 min de descanso.
     const attentionSlots = useMemo(() => {
         if (!fechaSeleccionada) return [];
 
@@ -93,16 +106,15 @@ export default function CalendarioMensualHoras() {
             return `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
         };
 
-        while (cursor + 60 <= endMinutes) {
+        while (cursor + duracionAtencionMin <= endMinutes) {
             const attStart = cursor;
-            const attEnd = cursor + 60;
+            const attEnd = cursor + duracionAtencionMin;
             slots.push({start: minutesToHHMM(attStart), end: minutesToHHMM(attEnd)});
-            // avanzar 60 + 10 minutos (=70) para el siguiente inicio
-            cursor = attEnd + 10;
+            cursor = attEnd + descansoEntreAtencionesMin;
         }
 
         return slots;
-    }, [fechaSeleccionada]);
+    }, [descansoEntreAtencionesMin, duracionAtencionMin, fechaSeleccionada]);
 
     const addMinutesToHHMM = (hhmm, minutesToAdd) => {
         const [hh, mm] = hhmm.split(":").map(Number);
@@ -149,7 +161,7 @@ export default function CalendarioMensualHoras() {
 
         // Si ya hay hora seleccionada, mantenla y recalcula las cadenas en el contexto
         if (horaInicio) {
-            const horaFinAuto = addMinutesToHHMM(horaInicio, 60);
+            const horaFinAuto = addMinutesToHHMM(horaInicio, duracionAtencionMin);
             setHoraFin(horaFinAuto);
             setFechaInicio(fechaYMD);
             setFechaFinalizacion(fechaYMD);
@@ -184,7 +196,7 @@ export default function CalendarioMensualHoras() {
             }
         }
 
-        const horaFinAuto = addMinutesToHHMM(hora, 60);
+        const horaFinAuto = addMinutesToHHMM(hora, duracionAtencionMin);
 
         setHoraInicio(hora);
         setHoraFin(horaFinAuto);
@@ -373,7 +385,7 @@ export default function CalendarioMensualHoras() {
         return () => {
             mounted = false;
         }
-    }, [fechaSeleccionada, attentionSlots]);
+    }, [fechaSeleccionada, attentionSlots, duracionAtencionMin]);
 
     // Evitar llamadas al backend en cada render; useEffect gestiona comprobaciones.
 
@@ -494,7 +506,7 @@ export default function CalendarioMensualHoras() {
                                     Agenda (09:00–22:00)
                                 </h3>
                                 <div className="flex items-center gap-3">
-                                    <p className="text-xs text-slate-500">Bloques de 60 min</p>
+                                    <p className="text-xs text-slate-500">Bloques de {duracionAtencionMin} min</p>
                                     {checkingBlocked && (
                                         <div className="flex items-center gap-2 text-xs text-slate-500">
                                             <svg className="w-3 h-3 animate-spin text-slate-500"
